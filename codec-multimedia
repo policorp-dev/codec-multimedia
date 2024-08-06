@@ -408,6 +408,7 @@ class CodecManager:
         
         return False
 
+
     def removeApp(self):
         try:
             # Read the list of packages from codecs.txt
@@ -418,42 +419,26 @@ class CodecManager:
                 print("No packages found to remove.")
                 return False
 
-            # Remove each package listed in codecs.txt
-            for package in packages:
-                command = ["sudo", "apt-get", "remove", package, "-y"]
-                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-                for line in iter(process.stdout.readline, ''):
-                    print(line.strip())
-                    self.queue.put(line.strip())  # Add the line to the queue
-                    time.sleep(0.1)
+            # Combine all packages into one remove command
+            remove_command = " ".join(packages)
+            combined_command = f"apt-get remove -y {remove_command} && apt-get autoremove -y"
 
-                # Wait for the process to complete
-                process.wait()
+            # Run the combined command with pkexec
+            command = ["pkexec", "sudo", "bash", "-c", combined_command]
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-                # Check if there was an error
-                stderr_output = process.stderr.read()
-                if "error" in stderr_output.lower():
-                    print(f"Error during removal of {package}: {stderr_output}")
-                    return False
-
-            # Perform autoremove
-            autoremove_command = ["sudo", "apt-get", "autoremove", "-y"]
-            autoremove_process = subprocess.Popen(autoremove_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-
-            for line in iter(autoremove_process.stdout.readline, ''):
+            for line in iter(process.stdout.readline, ''):
                 print(line.strip())
                 self.queue.put(line.strip())  # Add the line to the queue
+                time.sleep(0.1)
 
-                # Sleep for a short period to avoid overwhelming the queue
-                time.sleep(0.5)
-
-            # Wait for the autoremove process to complete
-            autoremove_process.wait()
+            # Wait for the process to complete
+            process.wait()
 
             # Check if there was an error
-            autoremove_stderr_output = autoremove_process.stderr.read()
-            if "error" in autoremove_stderr_output.lower():
-                print(f"Error during autoremove: {autoremove_stderr_output}")
+            stderr_output = process.stderr.read()
+            if "error" in stderr_output.lower():
+                print(f"Error during removal and autoremove: {stderr_output}")
                 return False
 
             # Check for successful completion messages
@@ -501,8 +486,9 @@ class CodecManager:
                 app.run_javascript("setCursorNormal();")
 
                 message = "<div class=\"text-md-center\">"
-                message += "<strong>Policorp Linux Store</strong><br>"
+                message += "<strong>Erro de Permissão</strong><br>"
                 message += "<br><br> Atenção"
+                message += "<br><br> Tente novamente para excluir os pacotes de codec."
                 message += "</div>"
 
                 popup = PopupMessage(message, PopupMessage.INFO)
@@ -525,58 +511,92 @@ class CodecManager:
             except Exception as e:
                 pass  # Nenhuma mensagem foi encontrada na fila
 
+
     def installApp(self):
         systemstate.remove_control_file()
+
         def install():
             try:
+                # Read all packages from codecs.txt
                 with open("codecs.txt", 'r') as file:
-                    for line in file:
-                        appId = line.strip()
-                        if appId:  # Ensure the line is not empty
-                            command = ["sudo", "apt-get", "install", "-y", appId]
-                            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                            
-                            # Read stdout and stderr line by line
-                            for stdout_line in iter(process.stdout.readline, ''):
-                                self.queue.put(stdout_line.strip())  # Put stdout line into the queue
-                            for stderr_line in iter(process.stderr.readline, ''):
-                                self.queue.put(stderr_line.strip())  # Put stderr line into the queue
+                    packages = [line.strip() for line in file if line.strip()]
 
-                            process.stdout.close()
-                            process.stderr.close()
-                            process.wait()
+                if not packages:
+                    self.queue.put("No packages found to install.")
+                    return
 
-                    self.queue.put("Codecs instalado com sucesso.")
+                # Combine all package names into one install command
+                packages_str = ' '.join(packages)
+                command = f"apt-get install -y {packages_str} && apt-get autoremove -y"
+
+                # Run the combined command with pkexec
+                pkexec_command = ["pkexec", "sudo", "bash", "-c", command]
+                process = subprocess.Popen(pkexec_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+                # Read stdout and stderr line by line
+                for stdout_line in iter(process.stdout.readline, ''):
+                    self.queue.put(stdout_line.strip())  # Put stdout line into the queue
+                for stderr_line in iter(process.stderr.readline, ''):
+                    self.queue.put(stderr_line.strip())  # Put stderr line into the queue
+
+                process.stdout.close()
+                process.stderr.close()
+                process.wait()
+
+                if process.returncode == 0:
+                    self.queue.put("Codecs foram instalados.")
+                    self.update_ui_after_installation()
+                else:
+                    self.queue.put("Ocorreu algum erro durante a instalação")
                     systemstate.remove_control_file()
-                    app.run_javascript("setCursorNormal();")
+
                     app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
                     app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
-                    app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
-                    app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
-                    app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-block');")
-                    app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
+                    app.run_javascript("document.getElementById('btn_open_app').disabled = false;")
                     app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
-                    message = "<div class=\"text-md-center\">"
-                    message += "<strong>Codecs-Multimidia</strong><br>"
-                    message += "<br><br> Informação"
-                    message += f"<br><br>Os Codecs foram instalados com sucesso."
-                    message += "</div>"
+                    app.run_javascript("setCursorNormal();")
 
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Erro de Permissão</strong><br>"
+                    message += "<br><br> Atenção"
+                    message += "<br><br> Tente novamente para instalar os pacotes de codec."
+                    message += "</div>"
                     popup = PopupMessage(message, PopupMessage.INFO)
 
                     popup.showMessage()
-            except subprocess.CalledProcessError as e:
-                self.queue.put(f"Erro ao instalar {appId}: {e}")
+
+
             except FileNotFoundError:
-                self.queue.put(f"O arquivo {self.filename} não foi encontrado.")
+                self.queue.put("The file codecs.txt was not found.")
             except Exception as e:
                 self.queue.put(f"An unexpected error occurred: {e}")
 
+        # Start UI update thread
         ui_update_thread = threading.Thread(target=self.update_ui_thread)
         ui_update_thread.start()
 
-        t = Thread(target=install)
-        t.start()
+        # Start installation thread
+        install_thread = threading.Thread(target=install)
+        install_thread.start()
+        
+    def update_ui_after_installation(self):
+        # UI updates after installation
+        app.run_javascript("setCursorNormal();")
+        app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
+        app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
+        app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
+        app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
+        app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-block');")
+        app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
+        app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
+        message = "<div class=\"text-md-center\">"
+        message += "<strong>Codecs-Multimidia</strong><br>"
+        message += "<br><br> Informação"
+        message += "<br><br>Os Codecs foram instalados com sucesso."
+        message += "</div>"
+
+        popup = PopupMessage(message, PopupMessage.INFO)
+        popup.showMessage()
 
 class SystemState(object):
 
