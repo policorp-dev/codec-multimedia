@@ -187,26 +187,7 @@ class AppView(WebKit2.WebView):
         elif 'flatpak-remove' in uri:
             systemstate.create_control_file()
             if codecmanager.isNetworkConnected():
-                if codecmanager.isAppInstaled():
                     codecmanager.initRemoveApp()
-                else:
-                    systemstate.remove_control_file()
-
-                    app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
-                    app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
-                    app.run_javascript("document.getElementById('btn_open_app').disabled = false;")
-                    app.run_javascript("document.getElementById('btn_remove_app').disabled = false;")
-                    app.run_javascript("setCursorNormal();")
-
-                    message = "<div class=\"text-md-center\">"
-                    message += "<strong>Policorp Linux Store</strong><br>"
-                    message += "<br><br> Atenção"
-                    message += f"<br><br>Não foi possível encontrar o aplicativo {flatpakmanager.appName}."
-                    message += "</div>"
-
-                    popup = PopupMessage(message, PopupMessage.INFO)
-
-                    popup.showMessage()
             else:
                 systemstate.remove_control_file()
 
@@ -225,10 +206,6 @@ class AppView(WebKit2.WebView):
                 popup = PopupMessage(message, PopupMessage.INFO)
 
                 popup.showMessage()
-        elif 'flatpak-open' in uri:
-            flatpakmanager.openApp()
-        elif uri == 'open-gnome-software':
-            flatpakmanager.openGnomeSoftware()
         else:
             print('Unknown command: {}'.format(uri))
 
@@ -433,23 +410,58 @@ class CodecManager:
 
     def removeApp(self):
         try:
-            command = ["flatpak", "uninstall","-y", self.appId]
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            # Read the list of packages from codecs.txt
+            with open('codecs.txt', 'r') as file:
+                packages = file.read().splitlines()
 
-            for line in iter(process.stdout.readline, b''):
-                print(line)
-                # Adiciona a mensagem à fila em vez de chamar run_javascript diretamente
-                self.queue.put(line)
+            if not packages:
+                print("No packages found to remove.")
+                return False
+
+            # Remove each package listed in codecs.txt
+            for package in packages:
+                command = ["sudo", "apt-get", "remove", package, "-y"]
+                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                for line in iter(process.stdout.readline, ''):
+                    print(line.strip())
+                    self.queue.put(line.strip())  # Add the line to the queue
+                    time.sleep(0.1)
+
+                # Wait for the process to complete
+                process.wait()
+
+                # Check if there was an error
+                stderr_output = process.stderr.read()
+                if "error" in stderr_output.lower():
+                    print(f"Error during removal of {package}: {stderr_output}")
+                    return False
+
+            # Perform autoremove
+            autoremove_command = ["sudo", "apt-get", "autoremove", "-y"]
+            autoremove_process = subprocess.Popen(autoremove_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+            for line in iter(autoremove_process.stdout.readline, ''):
+                print(line.strip())
+                self.queue.put(line.strip())  # Add the line to the queue
+
+                # Sleep for a short period to avoid overwhelming the queue
                 time.sleep(0.5)
 
-                if line == "":
-                    stderr_output = process.stderr.read()
-                    if "erro" in stderr_output.lower():
-                        return False
-                if "Desinstalação concluída." in line:
-                    return True
+            # Wait for the autoremove process to complete
+            autoremove_process.wait()
+
+            # Check if there was an error
+            autoremove_stderr_output = autoremove_process.stderr.read()
+            if "error" in autoremove_stderr_output.lower():
+                print(f"Error during autoremove: {autoremove_stderr_output}")
+                return False
+
+            # Check for successful completion messages
+            return True
+
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
+            return False
 
     def initRemoveApp(self):
         def remove_process():
@@ -469,10 +481,11 @@ class CodecManager:
                 app.run_javascript("document.getElementById('btn_remove_app').disabled = false;")
                 app.run_javascript("setCursorNormal();")
 
+                self.queue.put("Codecs Removidos com sucesso.")
                 message = "<div class=\"text-md-center\">"
-                message += "<strong>Policorp Linux Store</strong><br>"
+                message += "<strong>Codec-Multimidia</strong><br>"
                 message += "<br><br> Informação"
-                message += f"<br><br>O aplicativo {flatpakmanager.appName} foi removido com sucesso."
+                message += "<br><br> Os codecs foram removidos com sucesso"
                 message += "</div>"
 
                 popup = PopupMessage(message, PopupMessage.INFO)
@@ -490,7 +503,6 @@ class CodecManager:
                 message = "<div class=\"text-md-center\">"
                 message += "<strong>Policorp Linux Store</strong><br>"
                 message += "<br><br> Atenção"
-                message += f"<br><br>Não foi possível encontrar o aplicativo {flatpakmanager.appName}."
                 message += "</div>"
 
                 popup = PopupMessage(message, PopupMessage.INFO)
@@ -503,7 +515,18 @@ class CodecManager:
         t = Thread(target=remove_process)
         t.start()
  
+    def update_ui_thread(self):
+        while True:
+            try:
+                message = self.queue.get(timeout=1)  # Tenta pegar uma mensagem da fila
+                if message:
+                    message = message.replace("\n", " ")
+                    app.update_page('#lbl_log', 'html', message)
+            except Exception as e:
+                pass  # Nenhuma mensagem foi encontrada na fila
+
     def installApp(self):
+        systemstate.remove_control_file()
         def install():
             try:
                 with open("codecs.txt", 'r') as file:
@@ -523,25 +546,25 @@ class CodecManager:
                             process.stderr.close()
                             process.wait()
 
-                            self.queue.put(f"{appId} instalado com sucesso.")
-                            systemstate.remove_control_file()
-                            app.run_javascript("setCursorNormal();")
-                            app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
-                            app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
-                            app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
-                            app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
-                            app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-block');")
-                            app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
-                            app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
-                            message = "<div class=\"text-md-center\">"
-                            message += "<strong>Policorp Linux Store</strong><br>"
-                            message += "<br><br> Informação"
-                            message += f"<br><br>Os Codecs foram instalados com sucesso."
-                            message += "</div>"
+                    self.queue.put("Codecs instalado com sucesso.")
+                    systemstate.remove_control_file()
+                    app.run_javascript("setCursorNormal();")
+                    app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
+                    app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
+                    app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
+                    app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
+                    app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-block');")
+                    app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
+                    app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Codecs-Multimidia</strong><br>"
+                    message += "<br><br> Informação"
+                    message += f"<br><br>Os Codecs foram instalados com sucesso."
+                    message += "</div>"
 
-                            popup = PopupMessage(message, PopupMessage.INFO)
+                    popup = PopupMessage(message, PopupMessage.INFO)
 
-                            popup.showMessage()
+                    popup.showMessage()
             except subprocess.CalledProcessError as e:
                 self.queue.put(f"Erro ao instalar {appId}: {e}")
             except FileNotFoundError:
@@ -843,7 +866,6 @@ class StoreApp(object):
         about_btn.set_can_focus(False)
 
         header.pack_start(page_title)
-        header.pack_end(about_btn)
 
         # build webkit container
         mv = AppView()
