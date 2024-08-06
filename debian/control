@@ -1,7 +1,7 @@
-Source: policorp-store
+Source: codec-multimedia
 Section: utils
 Priority: optional
-Maintainer: Jorge Neto <jorge.neto@policorp.com.br>
+Maintainer: Matheus Aguiar <matheus.aguiar@policorp.com.br>
 Build-Depends:
     debhelper (>= 11),
     python3,
@@ -9,13 +9,12 @@ Build-Depends:
 Standards-Version: 4.1.3
 Homepage: https://www.policorp.com.br/
 
-Package: policorp-store
+Package: codec-multimedia
 Architecture: all
 Depends:
-    flatpak,
     gir1.2-gtk-3.0,
     gir1.2-webkit2-4.0,
     ${python3:Depends},
     ${misc:Depends}
-Description: Policorp Linux Store
- Um seletor intuitivo e eficiente para o editor de aplicativos no Policorp Linux. 
+Description: Codec Multimídia 
+ Facilitador de instalacao de codecs.

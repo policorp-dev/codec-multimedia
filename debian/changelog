@@ -1,5 +1,5 @@
-policorp-store (2.2) UNSTABLE; urgency=medium
+codec-multimedia (1.0) stable; urgency=medium
 
-  * Adiciona o pacote Policorp Linux Store
+  * Adiciona o pacote Policorp Codecs
 
- -- Jorge Neto <jorge.neto@policorp.com.br>  Sun, 21 Jul 2024 12:48:35 -0300
+ -- Matheus Aguiar <matheus.aguiar@policorp.com.br>  Sun, 21 Jul 2024 12:48:35 -0300
