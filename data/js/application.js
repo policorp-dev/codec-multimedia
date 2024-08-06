@@ -1,5 +1,5 @@
 const params = new URLSearchParams(window.location.search);
-const appName = "Spotify"
+const appName = "codecs"
 
 setCursorBusy();
 setTimeout(function () {
