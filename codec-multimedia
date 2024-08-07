@@ -850,7 +850,7 @@ class StoreApp(object):
         w.set_position(Gtk.WindowPosition.CENTER)
         w.set_title("Instalador de Codecs Multimídia")
 
-        icon_dir = os.path.join(self._data_path, 'img', 'store', 'icon.svg')
+        icon_dir = os.path.join(self._data_path, 'img', 'store', 'codec-icon.png')
         w.set_icon_from_file(icon_dir)
 
         # Turn window into a CSD styled application and create menu entries.
