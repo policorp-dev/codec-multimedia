@@ -170,6 +170,7 @@ class AppView(WebKit2.WebView):
         elif 'flatpak-install' in uri:
             systemstate.create_control_file()
             if not codecmanager.isNetworkConnected():
+                systemstate.remove_control_file()
                 app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
                 app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
                 app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
@@ -348,14 +349,11 @@ class CodecManager:
     def isCodecInstalled(self):
         try:
             result = subprocess.run(['vlc', '--version'], capture_output=True, text=True, check=True)
-            print(f"Flatpak está instalado. Versão: {result.stdout.strip()}")
             return True
         except FileNotFoundError:
-            print("O comando `flatpak` não foi encontrado. O Flatpak não está instalado.")
             return False
         except subprocess.CalledProcessError:
             # Se o comando falhar, o Flatpak não está instalado ou ocorreu um erro
-            print("O Flatpak está instalado, mas ocorreu um erro ao verificar a versão.")
             return False
 
     def checkFlathubRepo(self):
