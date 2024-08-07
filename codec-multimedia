@@ -58,7 +58,7 @@ class AppView(WebKit2.WebView):
     def _back_action(self, data):
         if systemstate.check_control_file_exists():
             message = "<div class=\"text-md-center\">"
-            message += "<strong>Policorp Linux Store</strong><br>"
+            message += "<strong>Codec-Multimídia</strong><br>"
             message += "<br><br> Atenção"
             message += "<br><br>Um processo está em execução no momento. Por favor, espere até que ele seja concluído antes de fechar ou sair."
             message += "</div>"
@@ -146,7 +146,7 @@ class AppView(WebKit2.WebView):
         elif uri == 'about':
             distroname = "Debian 12"
             message = "<div class=\"text-md-center\">"
-            message += "<strong>Policorp Linux Store</strong><br>"
+            message += "<strong>Codec-Multimídia</strong><br>"
             message += "Versão {}".format(
                 systemstate.app_version
             )
@@ -176,7 +176,7 @@ class AppView(WebKit2.WebView):
                 app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
                 app.run_javascript("setCursorNormal();")
                 message = "<div class=\"text-md-center\">"
-                message += "<strong>Policorp Linux Store</strong><br>"
+                message += "<strong>Codecs Multimídia</strong><br>"
                 message += "<br><br> Atenção"
                 message += "<br><br>Sem conexão com a internet. Verifique se o cabo está conectado ou se você está conectado a uma rede Wi-Fi."
                 message += "</div>"
@@ -198,7 +198,7 @@ class AppView(WebKit2.WebView):
                 app.run_javascript("setCursorNormal();")
 
                 message = "<div class=\"text-md-center\">"
-                message += "<strong>Policorp Linux Store</strong><br>"
+                message += "<strong>Codecs Multimídia</strong><br>"
                 message += "<br><br> Atenção"
                 message += "<br><br>Sem conexão com a internet. Verifique se o cabo está conectado ou se você está conectado a uma rede Wi-Fi."
                 message += "</div>"
@@ -944,7 +944,7 @@ class StoreApp(object):
     def close(self, p1=None, p2=None):
         if systemstate.check_control_file_exists():
             message = "<div class=\"text-md-center\">"
-            message += "<strong>Policorp Linux Store</strong><br>"
+            message += "<strong>Codec-Multimídia</strong><br>"
             message += "<br><br> Atenção"
             message += "<br><br>Um processo está em execução no momento. Por favor, espere até que ele seja concluído antes de fechar ou sair."
             message += "</div>"
