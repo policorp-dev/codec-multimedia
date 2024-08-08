@@ -350,15 +350,13 @@ class CodecManager:
     def isCodecInstalled(self):
         try:
             result = subprocess.run(
-                ['dpkg-query', '-W', '-f=${Status}', 'gstreamer1.0-plugins-bad'],
+                ['dpkg', '-l'],
                 capture_output=True,
                 text=True,
                 check=True
             )
-            if 'install ok installed' in result.stdout:
-                return True
-            else:
-                return False
+
+            return 'gstreamer1.0-plugins-bad' in result.stdout
         except FileNotFoundError:
             return False
         except subprocess.CalledProcessError:
