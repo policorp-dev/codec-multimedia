@@ -606,7 +606,7 @@ class SystemState(object):
     def __init__(self):
         self.home_dir = os.path.expanduser('~')
         self.config_dir = os.path.join(self.home_dir, '.config')
-        self.control_store_file = os.path.join(self.config_dir, 'controlStore')
+        self.control_store_file = os.path.join(self.config_dir, 'controlCodecs')
 
         # Set default variables
         self.is_online = False
