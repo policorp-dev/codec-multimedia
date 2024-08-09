@@ -1,3 +1,9 @@
+codec-multimedia (1.5) stable; urgency=medium
+
+  * Modificado label de codecs.
+
+ -- Matheus Aguiar <matheus.aguiar@policorp.com.br>  Fri, 09 Aug 2024 11:12:46 -0400
+
 codec-multimedia (1.4) stable; urgency=medium
 
   * Fix para condição de mostrar remover
