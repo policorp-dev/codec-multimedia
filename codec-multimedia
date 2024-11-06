@@ -819,6 +819,7 @@ class StoreApp(object):
     def __init__(self):
         self.current_page = ""
         self.last_page = ""
+        self.is_main_page = True  # Variável de controle
 
         # establish our location
         self._location = os.path.dirname(
@@ -834,6 +835,9 @@ class StoreApp(object):
             sys.exit(1)
 
         self._start_page = os.path.join(self._data_path, 'index.html')
+
+        self.settings = Gio.Settings.new("org.gnome.desktop.interface")
+        self.settings.connect("changed", self.on_settings_changed)
 
         self._build_app()
 
@@ -864,19 +868,38 @@ class StoreApp(object):
         header.props.show_close_button = True
         w.set_titlebar(header)
 
+                # Criar uma label para mostrar o tema atual
+        self.theme_label = Gtk.Label(label="Tema não detectado")
+        header.pack_end(self.theme_label)  # Adiciona ao cabeçalho
+
         section_label = Gtk.Label()
         page_title = Gtk.Label()
 
         theme = Gtk.IconTheme.get_default()
         theme.append_search_path(os.path.join(self._data_path, 'img', 'store'))
-        iconfile =  Gio.ThemedIcon(name="icon")
-        about_img = Gtk.Image.new_from_gicon(iconfile,Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="icon")
+        about_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="go-left-symbolic")
+        back_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="home")
+        home_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
 
         about_btn = Gtk.Button(image=about_img)
+        back_btn = Gtk.Button(image=back_img)
+        back_btn.set_sensitive(False)
+        back_btn.set_name("back-btn")
+        back_btn.set_visible(False)
         about_btn.set_name("about-btn")
         about_btn.set_can_focus(False)
 
+        home_btn = Gtk.Button(image=home_img)
+        home_btn.set_name("home-btn")
+        header.pack_start(home_btn)  # Adiciona o botão Home ao cabeçalho
+
+        header.pack_start(back_btn)
         header.pack_start(page_title)
+        header.pack_end(about_btn)
+
 
         # build webkit container
         mv = AppView()
@@ -988,6 +1011,38 @@ class StoreApp(object):
         """
         self.webkit.evaluate_javascript(script, -1, None, None, None, None)
         return GLib.SOURCE_REMOVE
+    
+    def detect_system_theme(self):
+        """Detecta o tema do sistema e chama a função handle_theme_change"""
+        theme = self.settings.get_string("color-scheme")
+        
+        if theme == "default":
+            self.handle_theme_change("default")
+            self.theme_label.set_text("Tema do sistema: Claro")
+        elif theme == "prefer-dark":
+            self.handle_theme_change("prefer-dark")
+            self.theme_label.set_text("Tema do sistema: Escuro")
+        else:
+            self.handle_theme_change("prefer-dark")
+            self.theme_label.set_text("Tema do sistema: Escuro")
+
+    def handle_theme_change(self, theme):
+        if theme == "default":  # Tema claro
+            js_code = "document.getElementById('theme-toggle').click();"
+            self.run_javascript(js_code)
+        elif theme == "prefer-dark":  # Tema escuro
+            js_code = "document.getElementById('theme-toggle').click();"
+            self.run_javascript(js_code)
+
+    def on_settings_changed(self, settings, key):
+        if key == "color-scheme":
+            new_theme = settings.get_string(key)
+            self.handle_theme_change(new_theme)
+            # Atualiza o label com o novo tema
+            if new_theme == "default":
+                self.theme_label.set_text("Tema do sistema: Claro")
+            elif new_theme == "prefer-dark":
+                self.theme_label.set_text("Tema do sistema: Escuro")
 
 
 if __name__ == "__main__":
