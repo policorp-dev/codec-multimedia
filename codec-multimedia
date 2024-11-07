@@ -840,6 +840,9 @@ class StoreApp(object):
         self.settings.connect("changed", self.on_settings_changed)
 
         self._build_app()
+        self.detect_system_theme()
+        thread = threading.Thread(target=self.threading_detect_system_theme)
+        thread.start()
 
     def get_screen_resolution(self):
         screen = Gdk.Screen.get_default()
@@ -1017,27 +1020,31 @@ class StoreApp(object):
         theme = self.settings.get_string("color-scheme")
         
         if theme == "default":
-            self.handle_theme_change("default")
+            self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Claro")
         elif theme == "prefer-dark":
-            self.handle_theme_change("prefer-dark")
+            self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Escuro")
         else:
-            self.handle_theme_change("prefer-dark")
+            self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Escuro")
 
-    def handle_theme_change(self, theme):
-        if theme == "default":  # Tema claro
-            js_code = "document.getElementById('theme-toggle').click();"
-            self.run_javascript(js_code)
-        elif theme == "prefer-dark":  # Tema escuro
+    def threading_detect_system_theme(self):
+        time.sleep(0.1)
+        theme = self.settings.get_string("color-scheme")
+        if theme == "prefer-dark":
+            return
+        else:
+            self.detect_system_theme()
+
+    def handle_theme_change(self):
             js_code = "document.getElementById('theme-toggle').click();"
             self.run_javascript(js_code)
 
     def on_settings_changed(self, settings, key):
         if key == "color-scheme":
             new_theme = settings.get_string(key)
-            self.handle_theme_change(new_theme)
+            self.handle_theme_change()
             # Atualiza o label com o novo tema
             if new_theme == "default":
                 self.theme_label.set_text("Tema do sistema: Claro")
