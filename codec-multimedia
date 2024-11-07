@@ -895,11 +895,11 @@ class StoreApp(object):
         about_btn.set_name("about-btn")
         about_btn.set_can_focus(False)
 
-        home_btn = Gtk.Button(image=home_img)
-        home_btn.set_name("home-btn")
-        header.pack_start(home_btn)  # Adiciona o botão Home ao cabeçalho
+#        home_btn = Gtk.Button(image=home_img)
+#        home_btn.set_name("home-btn")
+#        header.pack_start(home_btn)  # Adiciona o botão Home ao cabeçalho
 
-        header.pack_start(back_btn)
+#        header.pack_start(back_btn)
         header.pack_start(page_title)
         header.pack_end(about_btn)
 

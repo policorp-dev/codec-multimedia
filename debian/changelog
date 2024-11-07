@@ -1,3 +1,9 @@
+codec-multimedia (1.6) stable; urgency=medium
+
+  * Add troca de tema automatica
+
+ -- Lucas Salles <lucas.salles@policorp.com.br> ,  Erick Bonfati <erick.bonofati@policorp.com.br>  Thu, 07 Nov 2024 12:27:54 -0300
+
 codec-multimedia (1.5) stable; urgency=medium
 
   * Modificado label de codecs.
