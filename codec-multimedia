@@ -1020,17 +1020,20 @@ class StoreApp(object):
         theme = self.settings.get_string("color-scheme")
         
         if theme == "default":
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
             self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Claro")
         elif theme == "prefer-dark":
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Escuro")
         else:
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.handle_theme_change()
             self.theme_label.set_text("Tema do sistema: Escuro")
 
     def threading_detect_system_theme(self):
-        time.sleep(0.1)
+        time.sleep(0.4)
         theme = self.settings.get_string("color-scheme")
         if theme == "prefer-dark":
             return
@@ -1047,8 +1050,10 @@ class StoreApp(object):
             self.handle_theme_change()
             # Atualiza o label com o novo tema
             if new_theme == "default":
+                Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
                 self.theme_label.set_text("Tema do sistema: Claro")
             elif new_theme == "prefer-dark":
+                Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
                 self.theme_label.set_text("Tema do sistema: Escuro")
 
 
