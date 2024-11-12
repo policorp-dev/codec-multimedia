@@ -871,10 +871,6 @@ class StoreApp(object):
         header.props.show_close_button = True
         w.set_titlebar(header)
 
-                # Criar uma label para mostrar o tema atual
-        self.theme_label = Gtk.Label(label="Tema não detectado")
-        header.pack_end(self.theme_label)  # Adiciona ao cabeçalho
-
         section_label = Gtk.Label()
         page_title = Gtk.Label()
 
@@ -1022,18 +1018,15 @@ class StoreApp(object):
         if theme == "default":
             Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
             self.handle_theme_change()
-            self.theme_label.set_text("Tema do sistema: Claro")
         elif theme == "prefer-dark":
             Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.handle_theme_change()
-            self.theme_label.set_text("Tema do sistema: Escuro")
         else:
             Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.handle_theme_change()
-            self.theme_label.set_text("Tema do sistema: Escuro")
 
     def threading_detect_system_theme(self):
-        time.sleep(0.4)
+        time.sleep(0.6)
         theme = self.settings.get_string("color-scheme")
         if theme == "prefer-dark":
             return
@@ -1051,10 +1044,8 @@ class StoreApp(object):
             # Atualiza o label com o novo tema
             if new_theme == "default":
                 Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
-                self.theme_label.set_text("Tema do sistema: Claro")
             elif new_theme == "prefer-dark":
                 Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
-                self.theme_label.set_text("Tema do sistema: Escuro")
 
 
 if __name__ == "__main__":
