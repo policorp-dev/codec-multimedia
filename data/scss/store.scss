@@ -52,13 +52,12 @@ body, button {
 #wrapper {
   min-height: 100%;
   position: relative;
-  background: $dark;
+  background: white; 
  
-  &.white-mode {
-  
+  &.dark-mode {
  	 min-height: 100%;
 	 position: relative;
-	 background: white; 
+   background: $dark;
   }
 }
 .center {

@@ -1022,13 +1022,13 @@ class StoreApp(object):
             Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.handle_theme_change()
         else:
-            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
             self.handle_theme_change()
 
     def threading_detect_system_theme(self):
-        time.sleep(0.6)
+        time.sleep(0.8)
         theme = self.settings.get_string("color-scheme")
-        if theme == "prefer-dark":
+        if theme == "default":
             return
         else:
             self.detect_system_theme()
