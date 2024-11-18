@@ -1,3 +1,9 @@
+codec-multimedia (1.7) stable; urgency=medium
+
+  * Fix para update.
+
+ -- Matheus Aguiar <matheus.aguiar@policorp.com.br>  Mon, 18 Nov 2024 16:15:30 -0300
+
 codec-multimedia (1.6) stable; urgency=medium
 
   * Add troca de tema automatica
