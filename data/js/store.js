@@ -493,16 +493,4 @@ function injectTitle() {
     document.title = "title?" + title;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const body = document.body;
-    const darkMode = localStorage.getItem('white-mode') === 'enabled';
-
-    if (darkMode) body.classList.add('white-mode');
-
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        wrapper.classList.toggle('white-mode');
-        localStorage.setItem('white-mode', body.classList.contains('white-mode') ? 'enabled' : 'disabled');
-    });
-});
-
 injectTitle();
