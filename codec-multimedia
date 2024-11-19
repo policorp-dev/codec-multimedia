@@ -520,23 +520,18 @@ class CodecManager:
 
         def install():
             try:
-                # Read all packages from codecs.txt
-                with open('/usr/share/policorp-codecs/codecs.txt', 'r') as file:
-                    packages = [line.strip() for line in file if line.strip()]
-
-                if not packages:
-                    self.queue.put("No packages found to install.")
-                    return
-
-                # Combine all package names into one install command
-                packages_str = ' '.join(packages)
-                command = f"apt-get install -y {packages_str} && apt-get autoremove -y"
+                # Combine apt-get update and install commands
+                update_and_install_command = """
+                    apt-get update -y && 
+                    apt-get install -y $(cat /usr/share/policorp-codecs/codecs.txt | grep -v '^\s*$') && 
+                    apt-get autoremove -y
+                """
 
                 # Run the combined command with pkexec
-                pkexec_command = ["pkexec", "sudo", "bash", "-c", command]
+                pkexec_command = ["pkexec", "sudo", "bash", "-c", update_and_install_command]
                 process = subprocess.Popen(pkexec_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-                # Read stdout and stderr line by line
+                # Read stdout and stderr for update and install commands
                 for stdout_line in iter(process.stdout.readline, ''):
                     self.queue.put(stdout_line.strip())  # Put stdout line into the queue
                 for stderr_line in iter(process.stderr.readline, ''):
@@ -568,7 +563,6 @@ class CodecManager:
 
                     popup.showMessage()
 
-
             except FileNotFoundError:
                 self.queue.put("The file codecs.txt was not found.")
             except Exception as e:
@@ -581,7 +575,7 @@ class CodecManager:
         # Start installation thread
         install_thread = threading.Thread(target=install)
         install_thread.start()
-        
+
     def update_ui_after_installation(self):
         # UI updates after installation
         app.run_javascript("setCursorNormal();")
@@ -819,6 +813,7 @@ class StoreApp(object):
     def __init__(self):
         self.current_page = ""
         self.last_page = ""
+        self.is_main_page = True  # Variável de controle
 
         # establish our location
         self._location = os.path.dirname(
@@ -835,7 +830,13 @@ class StoreApp(object):
 
         self._start_page = os.path.join(self._data_path, 'index.html')
 
+        self.settings = Gio.Settings.new("org.gnome.desktop.interface")
+        self.settings.connect("changed", self.on_settings_changed)
+
         self._build_app()
+        self.detect_system_theme()
+        thread = threading.Thread(target=self.threading_detect_system_theme)
+        thread.start()
 
     def get_screen_resolution(self):
         screen = Gdk.Screen.get_default()
@@ -869,14 +870,29 @@ class StoreApp(object):
 
         theme = Gtk.IconTheme.get_default()
         theme.append_search_path(os.path.join(self._data_path, 'img', 'store'))
-        iconfile =  Gio.ThemedIcon(name="icon")
-        about_img = Gtk.Image.new_from_gicon(iconfile,Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="icon")
+        about_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="go-left-symbolic")
+        back_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
+        iconfile = Gio.ThemedIcon(name="home")
+        home_img = Gtk.Image.new_from_gicon(iconfile, Gtk.IconSize.DND)
 
         about_btn = Gtk.Button(image=about_img)
+        back_btn = Gtk.Button(image=back_img)
+        back_btn.set_sensitive(False)
+        back_btn.set_name("back-btn")
+        back_btn.set_visible(False)
         about_btn.set_name("about-btn")
         about_btn.set_can_focus(False)
 
+#        home_btn = Gtk.Button(image=home_img)
+#        home_btn.set_name("home-btn")
+#        header.pack_start(home_btn)  # Adiciona o botão Home ao cabeçalho
+
+#        header.pack_start(back_btn)
         header.pack_start(page_title)
+        header.pack_end(about_btn)
+
 
         # build webkit container
         mv = AppView()
@@ -988,6 +1004,42 @@ class StoreApp(object):
         """
         self.webkit.evaluate_javascript(script, -1, None, None, None, None)
         return GLib.SOURCE_REMOVE
+    
+    def detect_system_theme(self):
+        """Detecta o tema do sistema e chama a função handle_theme_change"""
+        theme = self.settings.get_string("color-scheme")
+        
+        if theme == "default":
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
+            self.handle_theme_change()
+        elif theme == "prefer-dark":
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
+            self.handle_theme_change()
+        else:
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
+            self.handle_theme_change()
+
+    def threading_detect_system_theme(self):
+        time.sleep(0.8)
+        theme = self.settings.get_string("color-scheme")
+        if theme == "default":
+            return
+        else:
+            self.detect_system_theme()
+
+    def handle_theme_change(self):
+            js_code = "document.getElementById('theme-toggle').click();"
+            self.run_javascript(js_code)
+
+    def on_settings_changed(self, settings, key):
+        if key == "color-scheme":
+            new_theme = settings.get_string(key)
+            self.handle_theme_change()
+            # Atualiza o label com o novo tema
+            if new_theme == "default":
+                Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
+            elif new_theme == "prefer-dark":
+                Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
 
 if __name__ == "__main__":
