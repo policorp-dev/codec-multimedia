@@ -588,26 +588,29 @@ class CodecManager:
                             # Retry package installation
                             time.sleep(3)
                             install()
+                            statusSkip = True
+
                         else:
                             self.queue.put(f"Erro ao corrigir dependências: {fix_process.stderr}")
                     else:
                         self.queue.put("Erro não relacionado a dependências quebradas. Verifique o log.")
 
                     # Update UI in case of failure
-                    systemstate.remove_control_file()
-                    app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
-                    app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
-                    app.run_javascript("document.getElementById('btn_open_app').disabled = false;")
-                    app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
-                    app.run_javascript("setCursorNormal();")
+                    if(not statusSkip):
+                        systemstate.remove_control_file()
+                        app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
+                        app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
+                        app.run_javascript("document.getElementById('btn_open_app').disabled = false;")
+                        app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
+                        app.run_javascript("setCursorNormal();")
 
-                    message = "<div class=\"text-md-center\">"
-                    message += "<strong>Erro de Permissão</strong><br>"
-                    message += "<br><br> Atenção"
-                    message += "<br><br> Tente novamente para instalar os pacotes de codec."
-                    message += "</div>"
-                    popup = PopupMessage(message, PopupMessage.INFO)
-                    popup.showMessage()
+                        message = "<div class=\"text-md-center\">"
+                        message += "<strong>Erro de Permissão</strong><br>"
+                        message += "<br><br> Atenção"
+                        message += "<br><br> Tente novamente para instalar os pacotes de codec."
+                        message += "</div>"
+                        popup = PopupMessage(message, PopupMessage.INFO)
+                        popup.showMessage()
 
                 else:
                     self.queue.put("Codecs foram instalados.")
@@ -1102,4 +1105,5 @@ if __name__ == "__main__":
 
     app = StoreApp()
     app.run()
+
 
