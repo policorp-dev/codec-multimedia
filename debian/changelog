@@ -1,3 +1,15 @@
+codec-multimedia (1.9) stable; urgency=medium
+
+  * Fix broken install #3
+
+ -- Matheus Aguiar <matheus.aguiar@policorp.com.br>  Mon, 25 Nov 2024 10:20:56 -0300
+
+codec-multimedia (1.8) stable; urgency=medium
+
+  * add correção para o APT #3
+
+ -- Lucas Salles <lucas.salles@policorp.com.br>  Thu, 21 Nov 2024 14:16:36 -0400
+
 codec-multimedia (1.7) stable; urgency=medium
 
   * Fix para update.
