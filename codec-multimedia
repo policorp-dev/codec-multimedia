@@ -920,11 +920,9 @@ class SystemState(object):
         if self.lang_pt():
             app.run_javascript(f"$('#lbl_name_app strong').text('Multimídia Codecs');")
             app.run_javascript(f"$('#lbl_description_app').text('Para total funcionalidade de alguns sons e videos é necessário a adição de codecs específicos');")
-            print("PT_BR")
         else:
             app.run_javascript(f"$('#lbl_name_app strong').text('Multimedia Codecs');")
             app.run_javascript(f"$('#lbl_description_app').text('For full functionality of some sounds and videos it is necessary to add specific codecs');")
-            print("EN_US")
 
         app.run_javascript(f"$('#img_app').attr('src', 'img/codec-icon.png');")
         app.run_javascript('setCursorNormal();')
