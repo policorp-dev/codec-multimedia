@@ -44,6 +44,7 @@ class AppView(WebKit2.WebView):
 
     def __init__(self):
         WebKit2.WebView.__init__(self)
+        self.system_state = SystemState()  # Cria uma instância de SystemState
 
         self.connect('load-changed', self._load_changed_cb)
         self.connect('notify::title', self._title_changed_cb)
@@ -175,11 +176,20 @@ class AppView(WebKit2.WebView):
                 app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
                 app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
                 app.run_javascript("setCursorNormal();")
-                message = "<div class=\"text-md-center\">"
-                message += "<strong>Codecs Multimídia</strong><br>"
-                message += "<br><br> Atenção"
-                message += "<br><br>Sem conexão com a internet. Verifique se o cabo está conectado ou se você está conectado a uma rede Wi-Fi."
-                message += "</div>"
+
+                if self.system_state.lang_pt():
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Codecs Multimídia</strong><br>"
+                    message += "<br><br> Atenção"
+                    message += "<br><br>Sem conexão com a internet. Verifique se o cabo está conectado ou se você está conectado a uma rede Wi-Fi."
+                    message += "</div>"
+                else:
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Multimedia Codecs</strong><br>"
+                    message += "<br><br> Attention"
+                    message += "<br><br>No internet connection. Check if the cable is plugged in or if you are connected to a WI-FI network.."
+                    message += "</div>"
+
                 popup = PopupMessage(message, PopupMessage.INFO)
                 popup.showMessage()
             else:
@@ -303,6 +313,7 @@ class CodecManager:
         self.appName = None
         self.appId = None
         self.queue = Queue()
+        self.system_state = SystemState()  # Cria uma instância de SystemState
 
     def isNetworkConnected(self):
         def run_ping():
@@ -469,12 +480,21 @@ class CodecManager:
                 app.run_javascript("document.getElementById('btn_remove_app').disabled = false;")
                 app.run_javascript("setCursorNormal();")
 
-                self.queue.put("Codecs Removidos com sucesso.")
-                message = "<div class=\"text-md-center\">"
-                message += "<strong>Codec-Multimidia</strong><br>"
-                message += "<br><br> Informação"
-                message += "<br><br> Os codecs foram removidos com sucesso"
-                message += "</div>"
+                if self.system_state.lang_pt():
+                    self.queue.put("Codecs Removidos com sucesso.")
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Codec-Multimidia</strong><br>"
+                    message += "<br><br> Informação"
+                    message += "<br><br> Os codecs foram removidos com sucesso"
+                    message += "</div>"
+                else:
+                    self.queue.put("Codecs Removed Successfully.")
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Multimedia-Codec</strong><br>"
+                    message += "<br><br> Information"
+                    message += "<br><br> Codecs have been removed successfully"
+                    message += "</div>"
+
 
                 popup = PopupMessage(message, PopupMessage.INFO)
 
@@ -488,11 +508,20 @@ class CodecManager:
                 app.run_javascript("document.getElementById('btn_remove_app').disabled = false;")
                 app.run_javascript("setCursorNormal();")
 
-                message = "<div class=\"text-md-center\">"
-                message += "<strong>Erro de Permissão</strong><br>"
-                message += "<br><br> Atenção"
-                message += "<br><br> Tente novamente para excluir os pacotes de codec."
-                message += "</div>"
+                
+                if self.system_state.lang_pt():
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Erro de Permissão</strong><br>"
+                    message += "<br><br> Atenção"
+                    message += "<br><br> Tente novamente para excluir os pacotes de codec."
+                    message += "</div>"
+                else:
+                    message = "<div class=\"text-md-center\">"
+                    message += "<strong>Permission Error</strong><br>"
+                    message += "<br><br> Attention"
+                    message += "<br><br> Please try again to delete the codec packs."
+                    message += "</div>"
+
 
                 popup = PopupMessage(message, PopupMessage.INFO)
 
@@ -527,13 +556,23 @@ class CodecManager:
                     pkexec_command = ["bash", "-c", command]
                     process = subprocess.run(pkexec_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     if process.returncode == 0:
-                        self.queue.put("APT configurado com sucesso..")
+                        if self.system_state.lang_pt():
+                            self.queue.put("APT configurado com sucesso..")
+                        else:
+                            self.queue.put("APT successfully configured..")
                         break
                     else:
-                        self.queue.put("Configurando o apt...")
+                        if self.system_state.lang_pt():
+                            self.queue.put("Configurando o apt...")
+                        else:
+                            self.queue.put("Configuring apt...")
+
                         time.sleep(2)
                 except Exception as e:
-                    self.queue.put(f"Erro durante o apt-get update: {e}")
+                    if self.system_state.lang_pt():
+                        self.queue.put(f"Erro durante o apt-get update: {e}")
+                    else:
+                        self.queue.put(f"Error during apt-get update: {e}")
                     break
 
         def install():
@@ -604,16 +643,28 @@ class CodecManager:
                         app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
                         app.run_javascript("setCursorNormal();")
 
-                        message = "<div class=\"text-md-center\">"
-                        message += "<strong>Erro de Permissão</strong><br>"
-                        message += "<br><br> Atenção"
-                        message += "<br><br> Tente novamente para instalar os pacotes de codec."
-                        message += "</div>"
+                        if self.system_state.lang_pt():
+                            message = "<div class=\"text-md-center\">"
+                            message += "<strong>Erro de Permissão</strong><br>"
+                            message += "<br><br> Atenção"
+                            message += "<br><br> Tente novamente para instalar os pacotes de codec."
+                            message += "</div>"
+                        else:
+                            message = "<div class=\"text-md-center\">"
+                            message += "<strong>Permission Error</strong><br>"
+                            message += "<br><br> Attention"
+                            message += "<br><br> Try again to install codec packs."
+                            message += "</div>"
+
                         popup = PopupMessage(message, PopupMessage.INFO)
                         popup.showMessage()
 
                 else:
-                    self.queue.put("Codecs foram instalados.")
+                    if self.system_state.lang_pt():
+                        self.queue.put("Codecs foram instalados.")
+                    else:
+                        self.queue.put("Codecs have been installed.")
+
                     self.update_ui_after_installation()
 
             except FileNotFoundError:
@@ -639,11 +690,20 @@ class CodecManager:
         app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-block');")
         app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
         app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
-        message = "<div class=\"text-md-center\">"
-        message += "<strong>Codecs-Multimidia</strong><br>"
-        message += "<br><br> Informação"
-        message += "<br><br>Os Codecs foram instalados com sucesso."
-        message += "</div>"
+
+        if self.system_state.lang_pt():
+            message = "<div class=\"text-md-center\">"
+            message += "<strong>Codecs-Multimidia</strong><br>"
+            message += "<br><br> Informação"
+            message += "<br><br>Os Codecs foram instalados com sucesso."
+            message += "</div>"
+        else:
+            message = "<div class=\"text-md-center\">"
+            message += "<strong>Multimedia-Codecs</strong><br>"
+            message += "<br><br> Information"
+            message += "<br><br>Codecs have been installed successfully."
+            message += "</div>"
+
 
         popup = PopupMessage(message, PopupMessage.INFO)
         popup.showMessage()
@@ -842,9 +902,13 @@ class SystemState(object):
         
         app.run_javascript('setCursorNormal();')
 
+    def lang_pt(self):
+        lang = os.environ.get('LANG', 'en_US')
+        language_code = lang.split('.')[0]
+        return language_code == "pt_BR"
+
     def create_app_page(self, webkit):
         dbg.stdout('AppInit', 'Criação da página de app', 1, 0)
-
         self.remove_control_file()
         if not codecmanager.isCodecInstalled():
             app.run_javascript(f"$('#btn_install_app').removeClass('d-none');")
@@ -852,18 +916,24 @@ class SystemState(object):
         else:
             app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
             app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
-
-        app.run_javascript(f"$('#lbl_name_app strong').text('Multimídia Codecs');")
-        app.run_javascript(f"$('#lbl_description_app').text('Para total funcionalidade de alguns sons e videos é necessário a adição de codecs específicos');")
+        
+        if self.lang_pt():
+            app.run_javascript(f"$('#lbl_name_app strong').text('Multimídia Codecs');")
+            app.run_javascript(f"$('#lbl_description_app').text('Para total funcionalidade de alguns sons e videos é necessário a adição de codecs específicos');")
+            print("PT_BR")
+        else:
+            app.run_javascript(f"$('#lbl_name_app strong').text('Multimedia Codecs');")
+            app.run_javascript(f"$('#lbl_description_app').text('For full functionality of some sounds and videos it is necessary to add specific codecs');")
+            print("EN_US")
 
         app.run_javascript(f"$('#img_app').attr('src', 'img/codec-icon.png');")
-        
         app.run_javascript('setCursorNormal();')
 
 
 class StoreApp(object):
 
     def __init__(self):
+        self.system_state = SystemState()  # Cria uma instância de SystemState
         self.current_page = ""
         self.last_page = ""
         self.is_main_page = True  # Variável de controle
@@ -908,13 +978,20 @@ class StoreApp(object):
         # build window
         w = Gtk.Window()
         w.set_position(Gtk.WindowPosition.CENTER)
-        w.set_title("Instalador de Codecs Multimídia")
+        if self.system_state.lang_pt():
+            w.set_title("Instalador de Codecs Multimídia")
+        else:
+            w.set_title("Multimedia Codec Installer")
 
         icon_dir = os.path.join(self._data_path, 'img', 'store', 'codec-icon.png')
         w.set_icon_from_file(icon_dir)
 
         # Turn window into a CSD styled application and create menu entries.
-        header = Gtk.HeaderBar(title="Instalador de Codecs Multimídia")
+        if self.system_state.lang_pt():
+            header = Gtk.HeaderBar(title="Instalador de Codecs Multimídia")
+        else:
+            header = Gtk.HeaderBar(title="Multimedia Codec Installer")
+
         header.props.show_close_button = True
         w.set_titlebar(header)
 

@@ -4,9 +4,12 @@ Type=Application
 Categories=AudioVideo;Audio;Mixer;GNOME;GTK;
 StartupNotify=false
 Name=Instalar Codecs Multimídia
+Name[pt_BR]=Instalar Codecs Multimídia
+Name[en_US]=Multimedia Codecs Installer
 Exec=env GDK_BACKEND=x11 /usr/share/policorp-codecs/codec-multimedia
 Icon=codec-icon
 Comment=An easy way to install codecs on Policorp Linux.
 Comment[pt_BR]=Um facilitador para instalação de codecs no Policorp Linux.
+Comment[en_US]=An easy way to install codecs on Policorp Linux.
 Keywords=desktop;preferences;
 StartupWMClass=Codec-Multimedia
