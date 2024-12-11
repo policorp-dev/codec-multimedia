@@ -148,9 +148,15 @@ class AppView(WebKit2.WebView):
             distroname = "Debian 12"
             message = "<div class=\"text-md-center\">"
             message += "<strong>Codec-Multimídia</strong><br>"
-            message += "Versão {}".format(
-                systemstate.app_version
-            )
+            if self.system_state.lang_pt():
+                message += "Versão {}".format(
+                        systemstate.app_version
+                        )
+            else:
+                message += "Version {}".format(
+                        systemstate.app_version
+                        )
+
             message += "<br><br> Policorp Tecnolgia Ltda"
             message += "<br><br>Policorp Linux ({})".format(
                 distroname
