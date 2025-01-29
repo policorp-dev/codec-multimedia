@@ -558,7 +558,7 @@ class CodecManager:
             """
             while True:
                 try:
-                    command = f"ls /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages"
+                    command = f"ls /var/lib/apt/lists/deb.debian.org_debian_dists_trixie_main_binary-amd64_Packages"
                     pkexec_command = ["bash", "-c", command]
                     process = subprocess.run(pkexec_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     if process.returncode == 0:
