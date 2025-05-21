@@ -102,6 +102,9 @@ class AppView(WebKit2.WebView):
             app.run_javascript("$('.offline').show()")
 
         distroname = "Debian 12"
+        distroname = self.system_state.run_external_command(['lsb_release', '-ds'])
+        distroname = distroname.replace('""','')
+        distroname = distroname.replace('GNU/Linux','').replace(' ', ' ').strip()
         app.run_javascript(
             "$('span[name=\"distro-name\"]').html('{}')".format(distroname))
 
@@ -145,7 +148,9 @@ class AppView(WebKit2.WebView):
             title = uri[6:]
             self.page_title.set_label(title)
         elif uri == 'about':
-            distroname = "Debian 12"
+            distroname = self.system_state.run_external_command(['lsb_release', '-ds'])
+            distroname = distroname.replace('""','')
+            distroname = distroname.replace('GNU/Linux','').replace(' ', ' ').strip()
             message = "<div class=\"text-md-center\">"
             message += "<strong>Codec-Multimídia</strong><br>"
             if self.system_state.lang_pt():

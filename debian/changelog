@@ -1,3 +1,9 @@
+codec-multimedia (1.12) stable; urgency=medium
+
+  * correção bug icone na barra de tarefas e distroname em sobre
+
+ -- Lucas Salles <lucas.salles@policorp.com.br>  Wed, 21 May 2025 15:59:24 -0300
+
 codec-multimedia (1.11) stable; urgency=medium
 
   * Atualizacao da dependencia gir1.2-webkit2-4.1
