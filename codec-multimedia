@@ -378,7 +378,7 @@ class CodecManager:
                 check=True
             )
 
-            return 'gstreamer1.0-plugins-bad' in result.stdout
+            return 'gstreamer1.0-libav' in result.stdout
         except FileNotFoundError:
             return False
         except subprocess.CalledProcessError:
