@@ -1,0 +1,75 @@
+{
+	"focal": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"evopop-theme",
+		"ant-theme",
+		"plata-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme"
+	],
+	"jammy": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme",
+		"fluent-theme",
+		"colloid-theme"
+	],
+	"kinetic": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme",
+		"fluent-theme"
+	],
+	"lunar": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme",
+		"fluent-theme",
+		"colloid-theme"
+	],
+	"mantic": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme",
+		"fluent-theme",
+		"colloid-theme"
+	],
+	"noble": [
+		"pocillo-theme",
+		"arc-theme",
+		"material-vimix-theme",
+		"material-materia2-theme",
+		"qogirbudgie-theme",
+		"mojave-theme",
+		"whitesur-theme",
+		"orchis-theme",
+		"fluent-theme",
+		"colloid-theme"
+	]
+}

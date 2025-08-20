@@ -1,0 +1,272 @@
+@import 'variables';
+@import 'header';
+@import 'content';
+@import 'global';
+@import 'introduction-page';
+@import 'main-menu';
+@import 'geting-started';
+@import 'community-page';
+@import 'override-bootstrap-default-styles.scss';
+@import 'popup-message';
+@import 'donate-page';
+
+/**
+ * File created to fix problems while migrating to bootstrap4,
+ * Once migration is done this can be made final
+ */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Behave more like an application by
+   * preventing text highlighting / dragging. */
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+body, button {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#wrapper {
+  min-height: 100%;
+  position: relative;
+  background: white; 
+ 
+  &.dark-mode {
+ 	 min-height: 100%;
+	 position: relative;
+   background: $dark;
+  }
+}
+.center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.backdrop-simple {
+  background-color: $color-background;
+}
+
+.cursor-wait {
+  cursor: wait;
+}
+
+.cursor-progress {
+  cursor: progress;
+}
+
+/* Live session and post installation session options */
+.live-session-only, .normal-session-only {
+  display: none
+}
+
+/* Official releases & Unofficial releases */
+.official-only, .unofficial-only {
+  display: none;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.video-link {
+  font-size: 16px;
+  transition: color 0.5s, transform 0.5s;
+
+  .icon-video-tour {
+    color: $danger;
+    font-size: 32px;
+    transition: transform 0.3s;
+    line-height: 0;
+  }
+
+  .lbl-video-tour {
+    color: $dark;
+    display: inline-block;
+    transition: transform 0.5s;
+  }
+
+  &:hover,
+  &:focus {
+    .icon-video-tour {
+      transform: scale(1.1);
+    }
+
+    .lbl-video-tour {
+      transform: scale(1.05);
+    }
+
+    text-decoration: none;
+    animation: none; // Para parar a animação enquanto o cursor está em cima ou em foco
+  }
+
+  &.blink {
+    animation: blink 2.5s infinite;
+  }
+}
+
+// Menu Cards
+.card-menu-1 {
+  transition: all 0.3s ease;
+
+  &:hover {
+    border: 1px solid $primary;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+
+  cursor: default;
+}
+
+.card-menu-2 {
+  transition: all 0.3s ease;
+
+  &:hover {
+    border: 1px solid $success;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+  
+  cursor: default;
+}
+
+.card-menu-3 {
+  transition: all 0.3s ease;
+
+  .btn-icon {
+    color: $orange;
+  }
+
+  &:hover {
+    border: 1px solid $orange;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+  
+  cursor: default;
+}
+
+.card-menu-4 {
+  transition: all 0.3s ease;
+
+  &:hover {
+    border: 1px solid $warning;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+  
+  cursor: default;
+}
+
+.card-menu-5 {
+  transition: all 0.3s ease;
+
+  .btn-icon {
+    color: $purple;
+  }
+
+  &:hover {
+    border: 1px solid $purple;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+  
+  cursor: default;
+}
+
+.card-menu-6 {
+  transition: all 0.3s ease;
+
+  &:hover {
+    border: 1px solid $danger;
+    transform: scale($hover-scale);
+    cursor: pointer;
+  }
+  
+  cursor: default;
+}
+
+// Card-body
+.card-menu-body {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.card-password {
+  transition: color 0.5s, transform 0.5s;
+
+  .card-icon-password {
+    transition: transform 0.3s;
+  }
+
+  .card-lbl-password {
+    transition: transform 0.5s;
+  }
+
+  &.shake {
+    animation: shake 2.5s infinite;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
