@@ -444,6 +444,19 @@ class CodecManager:
                 print("No packages found to remove.")
                 return False
 
+            check_gnome_snapshot = subprocess.run(
+                ["dpkg", "-s", "gnome-snapshot"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+
+            if check_gnome_snapshot.returncode == 0:
+                packages = [pkg for pkg in packages if pkg != "gstreamer1.0-plugins-bad"]
+                if not packages:
+                    print("packages vazio: sem o gstreamer1.0-plugins-bad.")
+                    return True
+
             # Combine all packages into one remove command
             remove_command = " ".join(packages)
             combined_command = f"apt-get remove -y {remove_command} && apt-get autoremove -y"
