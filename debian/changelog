@@ -1,3 +1,9 @@
+codec-multimedia (1.16) stable; urgency=medium
+
+  * Add pacote libavcodec-extra
+
+ -- Vinicius Neves <vinicius.neves@policorp.com.br>  Fri, 05 Sep 2025 10:44:10 -0400
+
 codec-multimedia (1.15) stable; urgency=medium
 
   * Adicionar verificação no remove #10
