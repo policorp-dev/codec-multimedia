@@ -1,0 +1,13 @@
+  #title_fingerprint_app1 {
+    display: none !important;
+  }
+  #title_fingerprint_app1.show {
+    display: block !important;
+  }
+
+  #lbl_fingerprint_app1 {
+    display: none;
+  }
+  #lbl_fingerprint_app1.show {
+    display: block;
+  }
