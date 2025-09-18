@@ -120,6 +120,7 @@ class AppView(WebKit2.WebView):
         try:
             app.current_page = uri.rsplit('#')[0].rsplit('/', 1)[1]
             self._push_config()
+            systemstate.create_app_page(self)
         except IndexError as e:
             dbg.stdout("_load_changed_cb", "weird uri " + uri, 0, 1)
 
@@ -1000,6 +1001,10 @@ class SystemState(object):
     def create_app_page(self, webkit):
         dbg.stdout('AppInit', 'Criação da página de app', 1, 0)
         self.remove_control_file()
+        thread_2 = threading.Thread(target=app.mostrar_detalhes_fingerprint)
+        verificar_lib = verificar_focal_tech()
+        if verificar_lib:
+            thread_2.start()
         if not codecmanager.isCodecInstalled():
             app.run_javascript(f"$('#btn_install_app').removeClass('d-none');")
             app.run_javascript(f"$('#btn_install_app').addClass('d-block');")
@@ -1007,15 +1012,9 @@ class SystemState(object):
             app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
             app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
         
-        # if self.lang_pt():
-        #     app.run_javascript(f"$('#lbl_name_app strong').text('Multimídia Codecs');")
-        #     app.run_javascript(f"$('#lbl_description_app').text('Para total funcionalidade de alguns sons e videos é necessário a adição de codecs específicos');")
-        # else:
-        #     app.run_javascript(f"$('#lbl_name_app strong').text('Multimedia Codecs');")
-        #     app.run_javascript(f"$('#lbl_description_app').text('For full functionality of some sounds and videos it is necessary to add specific codecs');")
-
         app.run_javascript(f"$('#img_app').attr('src', 'img/codec-icon.png');")
         app.run_javascript('setCursorNormal();')
+
 
 
 class StoreApp(object):
@@ -1046,12 +1045,9 @@ class StoreApp(object):
 
         self._build_app()
         self.detect_system_theme()
-        thread_2 = threading.Thread(target=self.mostrar_detalhes_fingerprint)
         thread = threading.Thread(target=self.threading_detect_system_theme)
-        verificar_lib = verificar_focal_tech()
         thread.start()
-        if verificar_lib:
-            thread_2.start()
+  
 
     def get_screen_resolution(self):
         screen = Gdk.Screen.get_default()
