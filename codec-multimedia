@@ -24,13 +24,14 @@ import subprocess
 import signal
 import os
 import inspect
+import requests
 
 try:
     import distro
 except:
     import platform
 
-from fingerprint import verificar_focal_tech, verificar_libfprint
+from fingerprint import verificar_focal_tech, verificar_libfprint, baixar_arquivo
 
 # global variable - path inc the suffix / of where the app is being executed
 start_location = "./"  # path defined on app startup
@@ -646,7 +647,17 @@ class CodecManager:
         def install():
             try:
                 run_apt_update()
-                deb_path = "/usr/share/policorp-codecs/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+                deb_path = os.path.expanduser(f"~/.local/share/codec-multimedia/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb")
+                verificar_lib = verificar_focal_tech()
+                #deb_path = "/usr/share/policorp-codecs/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+                
+                if not os.path.exists(deb_path) and verificar_lib:
+                    url = "https://www.policorp.com.br/downloads/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+                    destino = os.path.expanduser(f"~/.local/share/codec-multimedia/")
+                    self.queue.put("Baixando libfprint-2-2_1.95.4+tod+...20250714.deb")
+                    baixar_arquivo(url, destino)
+                if os.path.exists(deb_path):
+                    self.queue.put("libfprint-2-2_1.95.4+tod+...20250714.deb já foi baixado.")
 
                 # Read all packages from codecs.txt
                 with open('/usr/share/policorp-codecs/codecs.txt', 'r') as file:
@@ -657,12 +668,10 @@ class CodecManager:
                     return
 
                 # Combine all package names into one install command
-                verificar_lib = verificar_focal_tech()
                 if verificar_lib:
                     packages.append(deb_path)
                     
                 packages_str = ' '.join(packages)
-                print(packages_str)
                 command = f"apt-get install -y {packages_str} && apt-get autoremove -y"
 
                 # Run the combined command with pkexec
