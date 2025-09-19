@@ -669,6 +669,9 @@ class CodecManager:
 
                 # Combine all package names into one install command
                 if verificar_lib:
+                    packages.append("fprintd") 
+                    packages.append("libfprint-2-2") 
+                    packages.append("libpam-fprintd")
                     packages.append(deb_path)
                     
                 packages_str = ' '.join(packages)
