@@ -8,6 +8,8 @@
     <link href="css/material-icons.css" rel="stylesheet" media="screen">
     <link href="css/animate.css" rel="stylesheet" media="screen">
     <link href="css/store.css" rel="stylesheet" media="screen">
+    <link href="css/fingerprint.css" rel="stylesheet" media="screen">
+
 </head>
 
 <body class="backdrop-simple fade fade-1s">
@@ -109,9 +111,35 @@
                                         e a sua instalação garante uma experiência multimídia completa no sistema.">
                                     </p>
                                 </div>
+                                <!-- TÍTULO (escondido por padrão) -->
+                                <div class="col-md-12 mt-5 d-flex align-items-center text-md-left" id="title_fingerprint_app1">
+                                    <h2>
+                                        <strong data-lang-en="It has been detected that your system has Fingerprint Hardware"
+                                                data-lang-pt="Foi detectado que o seu sistema tem um Hardware de Impressão Digital">
+                                        </strong>
+                                    </h2>
+                                </div>
+
+                                <!-- DESCRIÇÃO (escondida por padrão) -->
+                                <div class="col-md-12 d-flex align-items-center text-md-left">
+                                    <p id="lbl_fingerprint_app1" style="font-size: 20px;" 
+                                    data-lang-en="It was detected that your Fingerprint Hardware is a Focal Tech model with vid: 0x2808 and the following ids: 0x9338, 0xd979, 0xc652, 0xa959, 0x0579. 
+                                    For it to work, it is necessary to install a model-specific driver provided by the manufacturer.." 
+                                    data-lang-pt="O seu Hardware de Impressão digital é do modelo Focal Tech com o vid:0x2808 e um dos seguintes id: 0x9338, 0xd979, 0xc652, 0xa959, 0x0579. 
+                                    Para ele funcionar é necessário instalação de um driver específico do modelo fornecido pelo fabricante.">
+                                    </p>
+                                </div>
+
+                                <!-- BOTÃO -->
+                                <div class="col-md-12 mt-3">
+                                    <button class="btn btn-primary" onclick="toggleFingerprintApp1()" id="btn_fingerprint_app1" style="display:none"> 
+                                        Mostrar detalhes
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
-                    </div>i
+                    </div>
                 </div>
                 <div class="col-md-1 text-md-center mb-3"></div>
             </div>
@@ -138,6 +166,7 @@
     <script src="js/select-theme.js"></script>
     <script src="js/application.js"></script>
     <script src="js/translation.js"></script>
+    <script src="js/index.js"></script>
 </body>
 
 </html>

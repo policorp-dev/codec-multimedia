@@ -24,12 +24,14 @@ import subprocess
 import signal
 import os
 import inspect
+import requests
 
 try:
     import distro
 except:
     import platform
 
+from fingerprint import verificar_focal_tech, verificar_libfprint, baixar_arquivo
 
 # global variable - path inc the suffix / of where the app is being executed
 start_location = "./"  # path defined on app startup
@@ -119,6 +121,7 @@ class AppView(WebKit2.WebView):
         try:
             app.current_page = uri.rsplit('#')[0].rsplit('/', 1)[1]
             self._push_config()
+            systemstate.create_app_page(self)
         except IndexError as e:
             dbg.stdout("_load_changed_cb", "weird uri " + uri, 0, 1)
 
@@ -148,6 +151,23 @@ class AppView(WebKit2.WebView):
             title = uri[6:]
             self.page_title.set_label(title)
         elif uri == 'about':
+            # Read all packages from codecs.txt
+            pacote = "libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp"
+            codecs_file_path = '/usr/share/policorp-codecs/codecs.txt'
+            with open(codecs_file_path, 'r') as file:
+                packages = [line.strip() for line in file if line.strip()]
+
+            if not packages:
+                self.queue.put("No packages found to install.")
+                return
+
+            # Combine all package names into one install command
+            verificar_lib = verificar_focal_tech()
+            if verificar_lib:
+                packages.append(pacote)
+            
+            packages_sobre =  '<br>' + '<br>'.join(packages)       
+
             distroname = self.system_state.run_external_command(['lsb_release', '-ds'])
             distroname = distroname.replace('""','')
             distroname = distroname.replace('GNU/Linux','').replace(' ', ' ').strip()
@@ -166,9 +186,15 @@ class AppView(WebKit2.WebView):
             message += "<br><br>Policorp Linux ({})".format(
                 distroname
             )
-
+            if self.system_state.lang_pt():
+                message += "<br><br>Os pacotes que serão instalados: {}".format(
+                    packages_sobre
+                )
+            else:
+                message += "<br><br>The packages that will be installed: {}".format(
+                    packages_sobre
+                )
             message += "</div>"
-
             popup = PopupMessage(message, PopupMessage.INFO)
 
             popup.showMessage()
@@ -456,6 +482,10 @@ class CodecManager:
                 if not packages:
                     print("packages vazio: sem o gstreamer1.0-plugins-bad.")
                     return True
+            
+            finger_print_package = verificar_libfprint()
+            if finger_print_package:
+                packages.append(finger_print_package)
 
             # Combine all packages into one remove command
             remove_command = " ".join(packages)
@@ -491,7 +521,8 @@ class CodecManager:
             result = self.removeApp()
             if result:
                 systemstate.remove_control_file()
-
+                
+                verificar_lib_information = verificar_focal_tech()
                 app.run_javascript("document.getElementById('pgr_install_app').classList.remove('d-block');")
                 app.run_javascript("document.getElementById('pgr_install_app').classList.add('d-none');")
                 app.run_javascript("document.getElementById('btn_install_app').classList.remove('d-none');")
@@ -506,17 +537,31 @@ class CodecManager:
 
                 if self.system_state.lang_pt():
                     self.queue.put("Codecs Removidos com sucesso.")
+                    time.sleep(2)
+                    if verificar_lib_information:
+                        self.queue.put("Libfprint-2-2 Removidos com sucesso.")
+                        time.sleep(2)
                     message = "<div class=\"text-md-center\">"
                     message += "<strong>Codec-Multimidia</strong><br>"
                     message += "<br><br> Informação"
-                    message += "<br><br> Os codecs foram removidos com sucesso"
+                    if verificar_lib_information:
+                        message += "<br><br> Os codecs e o driver de impressão digital foram removidos com sucesso"
+                    else:
+                        message += "<br><br> Os codecs foram removidos com sucesso"
                     message += "</div>"
                 else:
                     self.queue.put("Codecs Removed Successfully.")
+                    time.sleep(2)
+                    if verificar_lib_information:
+                        self.queue.put("Libfprint-2-2 Removed Successfully.")
+                        time.sleep(2)
                     message = "<div class=\"text-md-center\">"
                     message += "<strong>Multimedia-Codec</strong><br>"
                     message += "<br><br> Information"
-                    message += "<br><br> Codecs have been removed successfully"
+                    if verificar_lib_information:
+                        message += "<br><br> Codecs and fingerprint driver have been successfully removed"
+                    else:
+                        message += "<br><br> Codecs have been removed successfully"
                     message += "</div>"
 
 
@@ -602,6 +647,17 @@ class CodecManager:
         def install():
             try:
                 run_apt_update()
+                deb_path = os.path.expanduser(f"~/.local/share/codec-multimedia/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb")
+                verificar_lib = verificar_focal_tech()
+                #deb_path = "/usr/share/policorp-codecs/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+                
+                if not os.path.exists(deb_path) and verificar_lib:
+                    url = "https://www.policorp.com.br/downloads/libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+                    destino = os.path.expanduser(f"~/.local/share/codec-multimedia/")
+                    self.queue.put("Baixando libfprint-2-2_1.95.4+tod+...20250714.deb")
+                    baixar_arquivo(url, destino)
+                if os.path.exists(deb_path):
+                    self.queue.put("libfprint-2-2_1.95.4+tod+...20250714.deb já foi baixado.")
 
                 # Read all packages from codecs.txt
                 with open('/usr/share/policorp-codecs/codecs.txt', 'r') as file:
@@ -612,6 +668,12 @@ class CodecManager:
                     return
 
                 # Combine all package names into one install command
+                if verificar_lib:
+                    packages.append("fprintd") 
+                    packages.append("libfprint-2-2") 
+                    packages.append("libpam-fprintd")
+                    packages.append(deb_path)
+                    
                 packages_str = ' '.join(packages)
                 command = f"apt-get install -y {packages_str} && apt-get autoremove -y"
 
@@ -686,10 +748,20 @@ class CodecManager:
                 else:
                     if self.system_state.lang_pt():
                         self.queue.put("Codecs foram instalados.")
+                        if verificar_lib:
+                            time.sleep(3)
+                            self.queue.put("Instalando biblioteca de impressão digital...")
+                            time.sleep(5)
                     else:
                         self.queue.put("Codecs have been installed.")
+                        if verificar_lib:
+                            time.sleep(3)
+                            self.queue.put("Installing fingerprint library...")
+                            time.sleep(5)
 
                     self.update_ui_after_installation()
+                    if verificar_lib:
+                        packages = [pkg for pkg in packages if pkg != deb_path]
 
             except FileNotFoundError:
                 self.queue.put("The file codecs.txt was not found.")
@@ -703,7 +775,7 @@ class CodecManager:
         # Start installation thread
         install_thread = threading.Thread(target=install)
         install_thread.start()
-        
+    
     def update_ui_after_installation(self):
         # UI updates after installation
         app.run_javascript("setCursorNormal();")
@@ -715,17 +787,24 @@ class CodecManager:
         app.run_javascript("document.getElementById('btn_install_app').classList.add('d-none');")
         app.run_javascript("document.getElementById('btn_install_app').disabled = false;")
 
+        verificar_lib_information = verificar_focal_tech()
         if self.system_state.lang_pt():
             message = "<div class=\"text-md-center\">"
             message += "<strong>Codecs-Multimidia</strong><br>"
             message += "<br><br> Informação"
-            message += "<br><br>Os Codecs foram instalados com sucesso."
+            if verificar_lib_information:
+                message += "<br><br>Os Codecs e o Driver de Impressão Digital foram instalados com sucesso."
+            else:
+                message += "<br><br>Os Codecs foram instalados com sucesso."
             message += "</div>"
         else:
             message = "<div class=\"text-md-center\">"
             message += "<strong>Multimedia-Codecs</strong><br>"
             message += "<br><br> Information"
-            message += "<br><br>Codecs have been installed successfully."
+            if verificar_lib_information:
+                message += "<br><br>Codecs and Fingerprint Drivers have been installed successfully."
+            else:
+                message += "<br><br>Codecs have been installed successfully."
             message += "</div>"
 
 
@@ -934,6 +1013,10 @@ class SystemState(object):
     def create_app_page(self, webkit):
         dbg.stdout('AppInit', 'Criação da página de app', 1, 0)
         self.remove_control_file()
+        thread_2 = threading.Thread(target=app.mostrar_detalhes_fingerprint)
+        verificar_lib = verificar_focal_tech()
+        if verificar_lib:
+            thread_2.start()
         if not codecmanager.isCodecInstalled():
             app.run_javascript(f"$('#btn_install_app').removeClass('d-none');")
             app.run_javascript(f"$('#btn_install_app').addClass('d-block');")
@@ -941,15 +1024,9 @@ class SystemState(object):
             app.run_javascript("document.getElementById('btn_remove_app').classList.remove('d-none');")
             app.run_javascript("document.getElementById('btn_remove_app').classList.add('d-block');")
         
-        # if self.lang_pt():
-        #     app.run_javascript(f"$('#lbl_name_app strong').text('Multimídia Codecs');")
-        #     app.run_javascript(f"$('#lbl_description_app').text('Para total funcionalidade de alguns sons e videos é necessário a adição de codecs específicos');")
-        # else:
-        #     app.run_javascript(f"$('#lbl_name_app strong').text('Multimedia Codecs');")
-        #     app.run_javascript(f"$('#lbl_description_app').text('For full functionality of some sounds and videos it is necessary to add specific codecs');")
-
         app.run_javascript(f"$('#img_app').attr('src', 'img/codec-icon.png');")
         app.run_javascript('setCursorNormal();')
+
 
 
 class StoreApp(object):
@@ -982,6 +1059,7 @@ class StoreApp(object):
         self.detect_system_theme()
         thread = threading.Thread(target=self.threading_detect_system_theme)
         thread.start()
+  
 
     def get_screen_resolution(self):
         screen = Gdk.Screen.get_default()
@@ -1182,6 +1260,30 @@ class StoreApp(object):
     def handle_theme_change(self):
             js_code = "document.getElementById('theme-toggle').click();"
             self.run_javascript(js_code)
+
+    def mostrar_detalhes_fingerprint(self):
+        time.sleep(0.5)
+       # js_code = "document.getElementById('btn_fingerprint_app1').click();"
+        js_code = """
+                (function() {
+                    const titulo = document.getElementById("title_fingerprint_app1");
+                    const desc = document.getElementById("lbl_fingerprint_app1");
+                    const btn = document.getElementById("btn_fingerprint_app1");
+
+                    const isHidden = !titulo.classList.contains('show');
+
+                    if (isHidden) {
+                        titulo.classList.add('show');
+                        desc.classList.add('show');
+                        btn.textContent = "Esconder detalhes";
+                    } else {
+                        titulo.classList.remove('show');
+                        desc.classList.remove('show');
+                        btn.textContent = "Mostrar detalhes";
+                    }
+                })();
+                """
+        self.run_javascript(js_code)
 
     def on_settings_changed(self, settings, key):
         if key == "color-scheme":
