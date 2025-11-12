@@ -42,6 +42,9 @@ codec_multimedia_sources = [
   '__init__.py',
   'main.py',
   'window.py',
+  'codecs.txt',
+  'install_apt.py',
+  'uninstall_apt.py',
   config_py,
 ]
 

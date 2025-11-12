@@ -18,6 +18,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import gi
 import subprocess
+import threading
+import re
+import sys
+
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gio, GLib
@@ -25,34 +29,64 @@ from gi.repository import Gtk, Adw, Gio, GLib
 @Gtk.Template(resource_path='/org/gnome/CodecMultimedia/window.ui')
 class CodecMultimediaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'CodecMultimediaWindow'
-    
+
     internet_banner: Adw.Banner = Gtk.Template.Child()
     install_button: Gtk.Button = Gtk.Template.Child()
+    install_progress_bar: Gtk.ProgressBar = Gtk.Template.Child()
+    progress_label: Gtk.Label = Gtk.Template.Child()
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
+        self.pulse_timer_id = None 
         self.monitor = Gio.NetworkMonitor.get_default()
         self.monitor.connect("network-changed", self.on_network_changed)
         self.internet_banner.set_sensitive(True)
-        # 4. Faça uma verificação inicial
         self.check_network_status()
-    
+        if self.verificar_codecs_instalados():
+            self.install_button.set_label("Remove")
+            self.install_button.set_sensitive(True)
+            self.install_button.remove_css_class("suggested-action")
+            self.install_button.add_css_class("destructive-action")
+        
     @Gtk.Template.Callback()
     def on_install_button_clicked(self, button):
-        print("Executando instalação de codecs…")
+        self.iniciar_instalacao()
         
     def iniciar_instalacao(self):
-        print("Executando instalação de codecs…")
+        """
+        Disparado pelo clique no botão.
+        Inicia a thread de instalação e o timer de pulsação.
+        """
+        texto_do_botao = self.install_button.get_label()
+        
+        #self.install_button.remove_css_class("suggested-action")
+        #self.install_button.add_css_class("destructive-action")
+        self.install_button.set_sensitive(False)
+        self.install_progress_bar.set_visible(True)
+        self.progress_label.set_visible(True)
+        if texto_do_botao == "Install":
+            self.progress_label.set_text("Installing...")
+            print("Executando instalação de codecs…")
+        else:
+            self.progress_label.set_text("Removing...")
+            print("Executando instalação de codecs…")
+            
+        if self.pulse_timer_id is None:
+            self.pulse_timer_id = GLib.timeout_add(100, self.do_pulse)
+
+        thread = threading.Thread(target=self._monitorar_instalacao_thread)
+        thread.daemon = True
+        thread.start()
         
     def check_network_status(self):
-            if self.monitor.get_network_available():
-                self.internet_banner.set_revealed(False)
-                self.install_button.set_sensitive(True) 
-            else:
-                self.internet_banner.set_visible(True) 
-                self.internet_banner.set_revealed(True)
-                self.install_button.set_sensitive(False)
+        if self.monitor.get_network_available():
+            self.internet_banner.set_revealed(False)
+            self.install_button.set_sensitive(True) 
+        else:
+            self.internet_banner.set_visible(True) 
+            self.internet_banner.set_revealed(True)
+            self.install_button.set_sensitive(False)
 
     def on_network_changed(self, monitor, is_available):
         print(f"O status da rede mudou. Disponível: {is_available}")
@@ -71,4 +105,114 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             subprocess.Popen(["gnome-control-center", "wifi"])
         except Exception:
             pass
+    
+    def do_pulse(self):
+        """
+        Esta função é chamada pelo timer e faz a barra pulsar.
+        """
+        self.install_progress_bar.pulse()
+        return GLib.SOURCE_CONTINUE
+
+    def _monitorar_instalacao_thread(self):
+        texto_do_botao = self.install_button.get_label()
+        if texto_do_botao == "Install":
+            helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/install_apt.py"
+        else:
+            helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/install_apt.py"
+        cmd = ["pkexec", "python3", "-u", helper_script_path]
+
+        try:
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.DEVNULL, 
+                stderr=subprocess.PIPE,    
+                text=True                  
+            )
             
+            stdout_output, stderr_output = process.communicate()
+            
+            if process.returncode == 0:
+                GLib.idle_add(self.finalizar_instalacao, True, "Instalação Concluída!")
+            else:
+                print(f"Erro no script helper (stderr): {stderr_output}") # Loga o erro completo
+                
+                if stderr_output and stderr_output.strip():
+                    linhas_de_erro = stderr_output.strip().splitlines()
+                    ultima_linha_erro = linhas_de_erro[-1]
+                    
+                    if ultima_linha_erro.startswith("ERRO:"):
+                        ultima_linha_erro = ultima_linha_erro.replace("ERRO:", "").strip()
+                        
+                    GLib.idle_add(self.finalizar_instalacao, False, f"Falha: {ultima_linha_erro}")
+                else:
+                    GLib.idle_add(self.finalizar_instalacao, False, "Falha (erro desconhecido)")
+
+        except Exception as e:
+            print(f"Erro ao chamar Popen/pkexec: {e}")
+            GLib.idle_add(self.finalizar_instalacao, False, "Erro no Polkit")
+
+    def finalizar_instalacao(self, sucesso: bool, mensagem: str):
+        """
+        Função final que roda na thread principal (GUI).
+        """
+        if self.pulse_timer_id is not None:
+            GLib.source_remove(self.pulse_timer_id)
+            self.pulse_timer_id = None
+            
+        self.install_progress_bar.set_visible(False)
+        self.progress_label.set_visible(False)
+        
+        if sucesso:
+            texto_do_botao = self.install_button.get_label()
+            if texto_do_botao == "Install":
+                self.install_button.set_label("Remove")
+                self.install_button.set_sensitive(True)
+                self.install_button.remove_css_class("suggested-action")
+                self.install_button.add_css_class("destructive-action")
+            else:
+                self.install_button.set_label("Install")
+                self.install_button.set_sensitive(True)
+                self.install_button.remove_css_class("destructive-action")
+                self.install_button.add_css_class("suggested-action")
+        else:
+            self.install_button.set_label("Retry")
+            self.install_button.set_sensitive(True) 
+            self.install_button.remove_css_class("suggested-action")
+            self.install_button.add_css_class("destructive-action")
+            
+        return GLib.SOURCE_REMOVE
+        
+    def verificar_codecs_instalados(self) -> bool:
+        caminho_arquivo = "/usr/share/codec-multimedia/codec_multimedia/codecs.txt"
+        try:
+            with open(caminho_arquivo, "r") as f:
+                pacotes = [
+                    line.strip()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                ]
+        except FileNotFoundError:
+            print(f"AVISO: {caminho_arquivo} não encontrado.", file=sys.stderr)
+            return False 
+
+        if not pacotes:
+            print("AVISO: codecs.txt está vazio.")
+            return False
+        try:
+            cache = apt.Cache()
+            cache.open(None)
+            
+            for pkg_name in pacotes:
+                pkg = cache[pkg_name]
+                if not pkg.is_installed:
+                    return False
+            
+            print("INFO: Todos os codecs de sistema estão instalados.")
+            return True
+            
+        except KeyError as e:
+            print(f"AVISO: Pacote '{e.args[0]}' não existe no APT.", file=sys.stderr)
+            return False 
+        except Exception as e:
+            print(f"Erro ao ler o cache do APT: {e}", file=sys.stderr)
+            return False
