@@ -163,9 +163,9 @@
         
       </object> </property>
     
-    <property name="default-height">800</property>
-    <property name="default-width">800</property>
-    <property name="resizable">false</property>
+    <property name="width-request">700</property>
+    <property name="height-request">700</property>
+    <property name="resizable">true</property>
     <property name="title" translatable="yes">Multimedia Codecs Installer</property>
   </template>
 </interface>
