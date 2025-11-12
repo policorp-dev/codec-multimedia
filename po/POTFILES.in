@@ -1,0 +1,8 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+data/org.gnome.CodecMultimedia.desktop.in
+data/org.gnome.CodecMultimedia.metainfo.xml.in
+data/org.gnome.CodecMultimedia.gschema.xml
+src/main.py
+src/window.py
+src/window.ui

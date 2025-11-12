@@ -1,3 +1,3 @@
-## Codecs-Multimida
+# codec-multimedia
 
-Aplicação com o objetivo de facilitar o usuário final a instalar os codecs necessários para melhor experiência.
+A description of this project.
