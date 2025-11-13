@@ -21,10 +21,18 @@ import subprocess
 import threading
 import re
 import sys
+import requests
+try:
+    import apt
+except Exception:
+    pass
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gio, GLib
+from .fingerprint import verificar_focal_tech, verificar_libfprint
+
+verificar_lib_information = verificar_focal_tech()
 
 @Gtk.Template(resource_path='/org/gnome/CodecMultimedia/window.ui')
 class CodecMultimediaWindow(Adw.ApplicationWindow):
@@ -34,6 +42,8 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
     install_button: Gtk.Button = Gtk.Template.Child()
     install_progress_bar: Gtk.ProgressBar = Gtk.Template.Child()
     progress_label: Gtk.Label = Gtk.Template.Child()
+    title_fingerprint: Gtk.Label = Gtk.Template.Child()
+    label_fingerprint: Gtk.Label = Gtk.Template.Child()
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -48,20 +58,17 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             self.install_button.set_sensitive(True)
             self.install_button.remove_css_class("suggested-action")
             self.install_button.add_css_class("destructive-action")
+        if verificar_lib_information:
+            self.title_fingerprint.set_visible(True)
+            self.label_fingerprint.set_visible(True)
         
     @Gtk.Template.Callback()
     def on_install_button_clicked(self, button):
         self.iniciar_instalacao()
         
     def iniciar_instalacao(self):
-        """
-        Disparado pelo clique no botão.
-        Inicia a thread de instalação e o timer de pulsação.
-        """
         texto_do_botao = self.install_button.get_label()
         
-        #self.install_button.remove_css_class("suggested-action")
-        #self.install_button.add_css_class("destructive-action")
         self.install_button.set_sensitive(False)
         self.install_progress_bar.set_visible(True)
         self.progress_label.set_visible(True)
@@ -107,9 +114,6 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             pass
     
     def do_pulse(self):
-        """
-        Esta função é chamada pelo timer e faz a barra pulsar.
-        """
         self.install_progress_bar.pulse()
         return GLib.SOURCE_CONTINUE
 
@@ -152,9 +156,6 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             GLib.idle_add(self.finalizar_instalacao, False, "Erro no Polkit")
 
     def finalizar_instalacao(self, sucesso: bool, mensagem: str):
-        """
-        Função final que roda na thread principal (GUI).
-        """
         if self.pulse_timer_id is not None:
             GLib.source_remove(self.pulse_timer_id)
             self.pulse_timer_id = None

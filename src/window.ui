@@ -154,6 +154,30 @@
                         <property name="wrap">True</property>
                       </object>
                     </child>
+
+                    <child>
+                      <object class="GtkLabel" id="title_fingerprint">
+                        <property name="halign">start</property>
+                        <property name="justify">center</property>
+                        <property name="label" translatable="yes">It has been detected that your system has Fingerprint Hardware</property>
+                        <property name="visible">False</property>
+                        <style>
+                          <class name="title-3"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_fingerprint">
+                        <property name="halign">start</property>
+                        <property name="justify">fill</property>
+                        <property name="label" translatable="yes">     It was detected that your Fingerprint Hardware is a Focal Tech model with vid: 0x2808 and the following ids: 0x9338, 0xd979, 0xc652, 0xa959, 0x0579.
+     For it to work, it is necessary to install a model-specific driver provided by the manufacturer.</property>
+                        <property name="visible">False</property>
+                        <property name="natural-wrap-mode">none</property>
+                        <property name="wrap">True</property>
+                      </object>
+                    </child>
+
                     <child>
                       <object class="GtkSeparator">
                         <property name="orientation">horizontal</property>

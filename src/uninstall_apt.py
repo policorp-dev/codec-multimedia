@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# uninstall_apt.py
 
 # Este script é chamado pelo pkexec e deve rodar como root.
 # Ele REMOVE os pacotes listados em codecs.txt.
@@ -7,13 +8,15 @@
 import apt
 import sys
 import os
+import subprocess
+
+try:
+    import fingerprint
+except ImportError as e:
+    print(f"ERRO:Falha ao importar o módulo 'fingerprint': {e}", file=sys.stderr)
+    sys.exit(1)
 
 def remover_pacotes_apt(lista_de_pacotes: list) -> bool:
-    """
-    Tenta remover uma lista de pacotes usando python-apt.
-    Retorna True em sucesso, False em falha.
-    Imprime erros no stderr.
-    """
     
     if os.geteuid() != 0:
         print("ERRO:Este script deve ser executado como root", file=sys.stderr)
@@ -50,28 +53,51 @@ def remover_pacotes_apt(lista_de_pacotes: list) -> bool:
         return False
 
 
+def obter_lista_modificada(filePath: str) -> list:
+    try:
+        with open(filePath, 'r') as file:
+            packages = file.read().splitlines()
+    except FileNotFoundError:
+        print(f"ERRO: {filePath} não encontrado.", file=sys.stderr)
+        return None
+
+    if not packages:
+        print("Arquivo de pacotes está vazio.")
+        return []
+
+    check_gnome_snapshot = subprocess.run(
+        ["dpkg", "-s", "gnome-snapshot"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+    if check_gnome_snapshot.returncode == 0:
+        packages = [pkg for pkg in packages if pkg != "gstreamer1.0-plugins-bad"]
+        if not packages:
+            print("Lista de pacotes vazia após remover gstreamer1.0-plugins-bad.")
+
+    finger_print_package = fingerprint.verificar_libfprint()
+    if finger_print_package:
+        packages.append(finger_print_package)
+
+    return packages
+
 if __name__ == "__main__":
     if sys.version_info >= (3, 7):
         sys.stderr.reconfigure(line_buffering=True)
 
-    caminho_arquivo = "/usr/share/codec-multimedia/codec_multimedia/codecs.txt"
+    file_path = "/usr/share/codec-multimedia/codec_multimedia/codecs.txt"
 
-    try:
-        with open(caminho_arquivo, "r") as f:
-            pacotes = [
-                line.strip()
-                for line in f
-                if line.strip() and not line.startswith("#")
-            ]
-    except FileNotFoundError:
-        print(f"ERRO:{caminho_arquivo} não encontrado", file=sys.stderr)
-        sys.exit(1)
+    pacotes_para_remover = obter_lista_modificada(file_path)
 
-    if not pacotes:
-        print("ERRO:codecs.txt está vazio", file=sys.stderr)
-        sys.exit(1)
+    if pacotes_para_remover is not None:
+        if not pacotes_para_remover:
+             print("ERRO:Lista de pacotes final está vazia.", file=sys.stderr)
+             sys.exit(1)
 
-    if remover_pacotes_apt(pacotes):
-        sys.exit(0) 
+        if remover_pacotes_apt(pacotes_para_remover):
+            sys.exit(0)
+        else:
+            sys.exit(1)
     else:
         sys.exit(1)

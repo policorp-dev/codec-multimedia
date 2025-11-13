@@ -24,6 +24,16 @@
         "*.a"
     ],
     "modules" : [
+	{
+            "name": "pip-install-requests",
+            "buildsystem": "simple",
+            "build-options": {
+            "build-args": [ "--share=network" ]
+            },
+            "build-commands": [
+               "pip3 install --prefix=/app requests"
+            ]
+    	},
         {
             "name" : "codec-multimedia",
             "builddir" : true,

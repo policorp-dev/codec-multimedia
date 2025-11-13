@@ -85,3 +85,4 @@ def main(version):
     """The application's entry point."""
     app = CodecMultimediaApplication()
     return app.run(sys.argv)
+
