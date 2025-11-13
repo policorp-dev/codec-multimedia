@@ -46,6 +46,7 @@ codec_multimedia_sources = [
   'install_apt.py',
   'uninstall_apt.py',
   'fingerprint.py',
+  'dialog_pkg.py',
   config_py,
 ]
 
