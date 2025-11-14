@@ -166,7 +166,7 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/install_apt.py"
         else:
             helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/uninstall_apt.py"
-        cmd = ["pkexec", "python3", "-u", helper_script_path]
+        cmd = ["pkexec", "/usr/bin/python3", "-u", helper_script_path]
 
         try:
             process = subprocess.Popen(

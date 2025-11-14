@@ -5,6 +5,7 @@
 
 import apt
 import apt.debfile
+import apt_pkg
 import sys
 import os
 import subprocess
@@ -57,10 +58,17 @@ def instalar_pacote_deb(deb_path: str) -> bool:
         cache = apt.Cache()
         cache.open(None)
 
-        # Verifica se o pacote já está instalado
         if deb.pkgname in cache and cache[deb.pkgname].is_installed:
-            print("INFO:Pacote .deb já estava instalado.", file=sys.stderr)
-            return True
+            apt_pkg.init_system()
+            versao_instalada = cache[deb.pkgname].installed.version
+            versao_deb = deb['Version']
+            # Retorna: >0 (se A > B), <0 (se A < B), 0 (se A == B)
+            comparacao = apt_pkg.version_compare(versao_deb, versao_instalada)
+            if comparacao <= 0:
+                print(f"INFO: Pacote {deb.pkgname} (v{versao_instalada}) já está instalado na versão correta ou mais nova.", file=sys.stderr)
+                return True
+
+            print(f"INFO: Atualizando {deb.pkgname} de {versao_instalada} para {versao_deb}...", file=sys.stderr)
 
         print("INFO:Verificando dependências...", file=sys.stderr)
         if not deb.check():

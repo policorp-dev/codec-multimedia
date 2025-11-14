@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.gnome.CodecMultimedia
+Exec=/usr/bin/codec-multimedia-helper
+User=root

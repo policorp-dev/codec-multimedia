@@ -42,5 +42,14 @@ configure_file(
   configuration: service_conf,
   install_dir: get_option('datadir') / 'dbus-1' / 'services'
 )
+configure_file(
+  input: 'org.gnome.CodecMultimedia.Helper.service.in',
+  output: 'org.gnome.CodecMultimedia.Helper.service',
+  configuration: service_conf,
+  install_dir: get_option('datadir') / 'dbus-1' / 'services'
+)
+install_data('org.gnome.CodecMultimedia.policy',
+	install_dir: get_option('datadir') / 'polkit-1' / 'actions'
+)
 
 subdir('icons')
