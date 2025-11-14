@@ -5,17 +5,19 @@
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>Codec-multimedia</name>
-  <summary>Keep the summary shorter, between 10 and 35 characters</summary>
+  <summary>Multimedia codec installer</summary>
   <description>
-    <p>No description</p>
+    <p>Facilitates codec installation.</p>
   </description>
 
   <developer id="tld.vendor">
-    <name>Developer name</name>
+    <name>Policorp Tecnologia</name>
+    <name>Lucas Salles</name>
+    <name>Edson Drosdeck</name>
   </developer>
 
   <!-- Required: Should be a link to the upstream homepage for the component -->
-  <url type="homepage">https://example.org/</url>
+  <url type="homepage">https://www.policorp.com.br/</url>
   <!-- Recommended: It is highly recommended for open-source projects to display the source code repository -->
   <url type="vcs-browser">https://example.org/repository</url>
   <!-- Should point to the software's bug tracking system, for users to report new bugs -->
@@ -49,11 +51,11 @@
   <screenshots>
     <screenshot type="default">
       <image>https://example.org/example1.png</image>
-      <caption>A caption</caption>
+      <caption>Main screenshot</caption>
     </screenshot>
     <screenshot>
       <image>https://example.org/example2.png</image>
-      <caption>A caption</caption>
+      <caption>Main screenshot</caption>
     </screenshot>
   </screenshots>
 

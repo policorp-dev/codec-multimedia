@@ -1,8 +1,6 @@
 [Desktop Entry]
 Name=Multimedia Codecs Installer
-Name[pt_BR]=Instalar Codecs Multimídia
 Comment=An easy way to install codecs on Policorp Linux.
-Comment[pt_BR]=Um facilitador para instalação de codecs no Policorp Linux.
 Exec=codec-multimedia
 Icon=play-button-svgrepo-com
 Terminal=false

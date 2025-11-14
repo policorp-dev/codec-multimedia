@@ -50,22 +50,6 @@ class CodecMultimediaApplication(Adw.Application):
         win.present()
 
     def on_about_action(self, *args):
-        texto_pango = """
-        <p><b>Pacotes Incluídos:</b></p>
-        <ul>
-          <li>gstreamer1.0-plugins-ugly</li>
-          <li>gstreamer1.0-libav</li>
-          <li>gstreamer1.0-plugins-bad</li>
-          <li>libavcodec-extra</li>
-        </ul>
-        """
-
-        # 2. Crie o Label e ative o markup
-        label_com_markup = Gtk.Label()
-        label_com_markup.set_use_markup(True)
-        label_com_markup.set_label(texto_pango)
-        label_com_markup.set_xalign(0) # Alinha o texto à esquerda
-
         """Callback for the app.about action."""
         about = Adw.AboutDialog(application_name='Multimedia Codecs Installer',
                                 application_icon='logo-policorp-codec',
@@ -75,8 +59,8 @@ class CodecMultimediaApplication(Adw.Application):
                                 copyright='© 2025 Policorp Tecnologia')
         # Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
 
-        about.set_comments('Packages that will be installed:\n\ngstreamer1.0-plugins-ugly\ngstreamer1.0-libav\ngstreamer1.0-plugins-bad\nlibavcodec-extra\n\nIf there is a hardware fingerprint Focal Tech:\n\nlibfprint-2-2' )
-        about.set_translator_credits(_('translator-credits'))
+        about.set_comments(_('Packages that will be installed:\n\ngstreamer1.0-plugins-ugly\ngstreamer1.0-libav\ngstreamer1.0-plugins-bad\nlibavcodec-extra\n\nIf there is a hardware fingerprint Focal Tech:\n\nlibfprint-2-2'))
+     #   about.set_translator_credits(_('translator-credits'))
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):

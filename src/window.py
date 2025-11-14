@@ -32,6 +32,12 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gio, GLib
 from .fingerprint import verificar_focal_tech, verificar_libfprint
 from .dialog_pkg import GenericConfirmDialog
+from .config import APPNAME
+import gettext
+gettext.bindtextdomain(APPNAME, "/usr/share/locale")
+gettext.textdomain(APPNAME)
+_ = gettext.gettext
+
 verificar_lib_information = verificar_focal_tech()
 erro_log  = ""
 @Gtk.Template(resource_path='/org/gnome/CodecMultimedia/window.ui')
@@ -54,7 +60,7 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
         self.internet_banner.set_sensitive(True)
         self.check_network_status()
         if self.verificar_codecs_instalados():
-            self.install_button.set_label("Remove")
+            self.install_button.set_label(_("Remove"))
             self.install_button.set_sensitive(True)
             self.install_button.remove_css_class("suggested-action")
             self.install_button.add_css_class("destructive-action")
@@ -65,10 +71,10 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_install_button_clicked(self, button):
         texto_do_botao = self.install_button.get_label()
-        if texto_do_botao == "Install":
+        if texto_do_botao == _("Install"):
            dialog = GenericConfirmDialog(
            heading_text=_("The packages will be installed. Do you wish to continue?"),
-           body_text=_(""),
+           body_text="",
            cancel_label=_("No"),
            confirm_label=_("Yes"),
            action_appearance=Adw.ResponseAppearance.SUGGESTED,
@@ -76,13 +82,13 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
            on_confirm=self.iniciar_instalacao
             )
            dialog.present(self)
-           self.progress_label.set_text("Installing...")
+           self.progress_label.set_text(_("Installing..."))
            print("Executando instalação de codecs…")
-        elif texto_do_botao == "Remove":
+        elif texto_do_botao == _("Remove"):
             print("Executando instalação de codecs…")
             dialog = GenericConfirmDialog(
             heading_text=_("The packages will be removed, do you wish to continue?"),
-            body_text=_(""),
+            body_text="",
             cancel_label=_("No"),
             confirm_label=_("Yes"),
             action_appearance=Adw.ResponseAppearance.SUGGESTED,
@@ -90,12 +96,13 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             on_confirm=self.iniciar_instalacao
              )
             dialog.present(self)
-            self.progress_label.set_text("Removing...")
+            self.progress_label.set_text(_("Removing..."))
             print("Executando remoção de codecs…")
         else:
+            task_label=_("Task failed to execute")
             dialog = GenericConfirmDialog(
                     heading_text=_("Task failed"),
-                    body_text=_(f"Task failed to execute: {erro_log}."),
+                    body_text=_(f"{task_label}: {erro_log}"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
             )
@@ -107,11 +114,11 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
         self.install_button.set_sensitive(False)
         self.install_progress_bar.set_visible(True)
         self.progress_label.set_visible(True)
-        if texto_do_botao == "Install":
-            self.progress_label.set_text("Installing...")
+        if texto_do_botao == _("Install"):
+            self.progress_label.set_text(_("Installing..."))
             print("Executando instalação de codecs…")
         else:
-            self.progress_label.set_text("Removing...")
+            self.progress_label.set_text(_("Removing..."))
             print("Executando instalação de codecs…")
             
         if self.pulse_timer_id is None:
@@ -155,10 +162,10 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
 
     def _monitorar_instalacao_thread(self):
         texto_do_botao = self.install_button.get_label()
-        if texto_do_botao == "Install":
+        if texto_do_botao == _("Install"):
             helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/install_apt.py"
         else:
-            helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/install_apt.py"
+            helper_script_path = "/usr/share/codec-multimedia/codec_multimedia/uninstall_apt.py"
         cmd = ["pkexec", "python3", "-u", helper_script_path]
 
         try:
@@ -201,8 +208,8 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
         
         if sucesso:
             texto_do_botao = self.install_button.get_label()
-            if texto_do_botao == "Install":
-                self.install_button.set_label("Remove")
+            if texto_do_botao == _("Install"):
+                self.install_button.set_label(_("Remove"))
                 self.install_button.set_sensitive(True)
                 self.install_button.remove_css_class("suggested-action")
                 self.install_button.add_css_class("destructive-action")
@@ -213,28 +220,29 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
                     on_confirm=self._on_confirm_ok
                 )
             else:
-                self.install_button.set_label("Install")
+                self.install_button.set_label(_("Install"))
                 self.install_button.set_sensitive(True)
                 self.install_button.remove_css_class("destructive-action")
                 self.install_button.add_css_class("suggested-action")
                 dialog = GenericConfirmDialog(
                     heading_text=_("Removed"),
-                    body_text=_("Os pacotes foram removido com sucesso!"),
+                    body_text=_("The packages have been successfully removed!"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
                 )
 
             dialog.present(self)
         else:
-            self.install_button.set_label("Retry")
+            self.install_button.set_label(_("Retry"))
             self.install_button.set_sensitive(True) 
             self.install_button.remove_css_class("suggested-action")
             self.install_button.add_css_class("destructive-action")
             global erro_log
             erro_log = mensagem
+            task_label=_("Task failed to execute")
             dialog = GenericConfirmDialog(
                     heading_text=_("Task failed"),
-                    body_text=_(f"Task failed to execute: {erro_log}."),
+                    body_text=_(f"{task_label}: {erro_log}"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
             )
