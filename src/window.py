@@ -233,16 +233,16 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
 
             dialog.present(self)
         else:
-            self.install_button.set_label(_("Retry"))
+            #self.install_button.set_label(_("Retry"))
             self.install_button.set_sensitive(True) 
-            self.install_button.remove_css_class("suggested-action")
-            self.install_button.add_css_class("destructive-action")
+            #self.install_button.remove_css_class("suggested-action")
+            #self.install_button.add_css_class("destructive-action")
             global erro_log
             erro_log = mensagem
             task_label=_("Task failed to execute")
             dialog = GenericConfirmDialog(
                     heading_text=_("Task failed"),
-                    body_text=_(f"{task_label}: {erro_log}"),
+                    body_text=_(f"{task_label}: {erro_log}\n\nClick OK and run again!"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
             )

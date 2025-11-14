@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: codec-multimedia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-14 10:50-0400\n"
-"PO-Revision-Date: 2025-11-14 10:51-0400\n"
+"POT-Creation-Date: 2025-11-14 14:06-0400\n"
+"PO-Revision-Date: 2025-11-14 14:08-0400\n"
 "Last-Translator: Lucas Salles\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -28,8 +28,7 @@ msgstr "Uma maneira fácil de instalar codecs no Policorp Linux."
 
 #: data/org.gnome.CodecMultimedia.desktop.in:10
 msgid "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
-msgstr ""
-"GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+msgstr "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
 
 #: data/org.gnome.CodecMultimedia.metainfo.xml.in:7
 msgid "Codec-multimedia"
@@ -114,7 +113,7 @@ msgstr "A tarefa não foi executada"
 msgid "Task failed"
 msgstr "Tarefa falhou"
 
-#: src/window.py:105 src/window.py:245
+#: src/window.py:105
 #, python-brace-format
 msgid "{task_label}: {erro_log}"
 msgstr "{task_label}: {erro_log}"
@@ -139,9 +138,16 @@ msgstr "Removido"
 msgid "The packages have been successfully removed!"
 msgstr "Os pacotes foram removidos com sucesso!"
 
-#: src/window.py:236
-msgid "Retry"
-msgstr "Tentar novamente"
+#: src/window.py:245
+#, python-brace-format
+msgid ""
+"{task_label}: {erro_log}\n"
+"\n"
+"Click OK and run again!"
+msgstr ""
+"{task_label}: {erro_log}\n"
+"\n"
+"Clique em OK e execute novamente!"
 
 #: src/window.ui:11
 msgid "_About"
@@ -154,8 +160,7 @@ msgstr "Para que servem os codecs?"
 #: src/window.ui:131
 msgid ""
 "     Codecs are software programs or libraries that enable the encoding "
-"(compression) and decoding (decompression) of audio and video data "
-"streams.\n"
+"(compression) and decoding (decompression) of audio and video data streams.\n"
 "                        "
 msgstr ""
 "     Codecs são programas de software ou bibliotecas que permitem a "
@@ -210,3 +215,6 @@ msgstr "Sem conexão com a internet"
 #: src/window.ui:207
 msgid "Configure Network"
 msgstr "Configurar Internet"
+
+#~ msgid "Retry"
+#~ msgstr "Tentar novamente"

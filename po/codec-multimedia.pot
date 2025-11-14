@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: codec-multimedia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-14 10:50-0400\n"
+"POT-Creation-Date: 2025-11-14 14:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Task failed"
 msgstr ""
 
-#: src/window.py:105 src/window.py:245
+#: src/window.py:105
 #, python-brace-format
 msgid "{task_label}: {erro_log}"
 msgstr ""
@@ -127,8 +127,12 @@ msgstr ""
 msgid "The packages have been successfully removed!"
 msgstr ""
 
-#: src/window.py:236
-msgid "Retry"
+#: src/window.py:245
+#, python-brace-format
+msgid ""
+"{task_label}: {erro_log}\n"
+"\n"
+"Click OK and run again!"
 msgstr ""
 
 #: src/window.ui:11

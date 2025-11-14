@@ -19,36 +19,107 @@ except ImportError as e:
 
 def instalar_pacotes_apt(lista_de_pacotes: list) -> bool:
     try:
-        cache = apt.Cache()
-        print("INFO:Atualizando cache (apt update)...", file=sys.stderr)
-        cache.update()
-        cache.open(None)
-    except Exception as e:
-        print(f"ERRO:Falha ao abrir/atualizar cache: {e}", file=sys.stderr)
+        print("INFO: (Etapa 1/2) Verificando e corrigindo 'dpkg' (dpkg --configure -a)...", file=sys.stderr)
+
+        env = os.environ.copy()
+        env["DEBIAN_FRONTEND"] = "noninteractive"
+
+        result_dpkg = subprocess.run(
+            ["dpkg", "--configure", "-a"],
+            check=False,
+            capture_output=True,
+            text=True,
+            env=env
+        )
+
+        if result_dpkg.returncode != 0:
+            print(f"AVISO: 'dpkg --configure -a' reportou problemas (provavelmente dependências, o que é esperado).", file=sys.stderr)
+            print(f"Detalhe: {result_dpkg.stderr}", file=sys.stderr)
+        else:
+            print("INFO: 'dpkg' verificado/corrigido.", file=sys.stderr)
+
+    except Exception as e_fix:
+        print(f"ERRO: Falha ao tentar executar 'dpkg --configure -a' via subprocess: {e_fix}", file=sys.stderr)
         return False
 
-    pacotes_a_instalar = []
-    
-    for pkg_name in lista_de_pacotes:
-        try:
-            pkg = cache[pkg_name]
-            if not pkg.is_installed:
-                pkg.mark_install()
-                pacotes_a_instalar.append(pkg_name)
-        except KeyError:
-            print(f"ERRO:Pacote '{pkg_name}' não encontrado", file=sys.stderr)
-            return False
+    try:
+        with apt.Cache() as cache_fix:
 
-    if not pacotes_a_instalar:
-        print("INFO:Pacotes APT já estão instalados.", file=sys.stderr)
-        return True
+            print("INFO: (Etapa 2/2) Atualizando cache para o 'fix-broken'...", file=sys.stderr)
+            try:
+                cache_fix.update(raise_on_error=True)
+            except apt.cache.FetchFailedException as e_update:
+                print(f"ERRO: Falha ao baixar listas para o 'fix-broken': {e_update}", file=sys.stderr)
+                return False
+
+            cache_fix.open(None)
+
+            if cache_fix.broken_count > 0:
+                print("INFO: (Etapa 2/2) Detectadas dependências quebradas. Corrigindo (apt --fix-broken)...", file=sys.stderr)
+
+                cache_fix.fix_broken()
+
+                try:
+                    print("INFO: (Etapa 2/2) Aplicando as correções (commit)...", file=sys.stderr)
+                    cache_fix.commit()
+                except Exception as e_commit:
+                    print(f"ERRO: Falha durante o 'commit' da correção: {e_commit}", file=sys.stderr)
+                    return False
+
+                cache_fix.open(None)
+
+                if cache_fix.broken_count == 0:
+                     print("INFO: Dependências corrigidas com sucesso.", file=sys.stderr)
+                else:
+                    print("ERRO: O 'fix_broken() + commit()' foi executado, mas o sistema ainda reporta pacotes quebrados. Abortando.", file=sys.stderr)
+                    return False
+            else:
+                print("INFO: (Etapa 2/2) Nenhuma dependência quebrada encontrada.", file=sys.stderr)
+
+    except apt.cache.LockFailedException as e:
+        print(f"ERRO: O APT estava em uso ao tentar corrigir dependências (fix-broken): {e}", file=sys.stderr)
+        return False
+    except Exception as e_fix:
+        print(f"ERRO: Falha crítica ao tentar executar 'fix_broken()': {e_fix}", file=sys.stderr)
+        return False
 
     try:
-        print(f"INFO:Instalando pacotes APT: {pacotes_a_instalar}", file=sys.stderr)
-        cache.commit()
-        return True
+        with apt.Cache() as cache:
+
+            print("INFO: (Etapa 3/3) Atualizando cache (apt update)...", file=sys.stderr)
+            try:
+                cache.update(raise_on_error=True)
+            except apt.cache.FetchFailedException as e:
+                print(f"ERRO: Falha ao baixar listas (apt update): {e}", file=sys.stderr)
+                return False
+
+            cache.open(None)
+            pacotes_a_instalar = []
+
+            for pkg_name in lista_de_pacotes:
+                try:
+                    pkg = cache[pkg_name]
+                    if not pkg.is_installed:
+                        pkg.mark_install()
+                        pacotes_a_instalar.append(pkg_name)
+                except KeyError:
+                    print(f"ERRO: Pacote '{pkg_name}' não encontrado", file=sys.stderr)
+                    return False
+
+            if not pacotes_a_instalar:
+                print("INFO: Pacotes APT já estão instalados.", file=sys.stderr)
+                return True
+
+            print(f"INFO: (Etapa 3/3) Instalando pacotes APT: {pacotes_a_instalar}", file=sys.stderr)
+
+            cache.commit()
+            return True
+
+    except apt.cache.LockFailedException as e:
+        print(f"ERRO: O APT já está em uso por outro processo (lock). Tente novamente. Detalhe: {e}", file=sys.stderr)
+        return False
     except Exception as e:
-        print(f"ERRO:Falha na instalação APT: {e}", file=sys.stderr)
+        print(f"ERRO: Falha inesperada na instalação APT (mesmo após correções): {e}", file=sys.stderr)
         return False
 
 def instalar_pacote_deb(deb_path: str) -> bool:
