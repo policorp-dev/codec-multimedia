@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: codec-multimedia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-14 14:06-0400\n"
+"POT-Creation-Date: 2025-11-17 11:15-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,16 +98,11 @@ msgstr ""
 msgid "Task failed to execute"
 msgstr ""
 
-#: src/window.py:104 src/window.py:244
+#: src/window.py:104 src/window.py:250
 msgid "Task failed"
 msgstr ""
 
-#: src/window.py:105
-#, python-brace-format
-msgid "{task_label}: {erro_log}"
-msgstr ""
-
-#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:246
+#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:252
 msgid "OK"
 msgstr ""
 
@@ -127,12 +122,17 @@ msgstr ""
 msgid "The packages have been successfully removed!"
 msgstr ""
 
-#: src/window.py:245
-#, python-brace-format
+#: src/window.py:243
+msgid "Click OK and run again!"
+msgstr ""
+
+#: src/window.py:246
 msgid ""
-"{task_label}: {erro_log}\n"
-"\n"
-"Click OK and run again!"
+"Another application may be using apt, please wait a few minutes to continue"
+msgstr ""
+
+#: src/window.py:247
+msgid "Click OK and wait to run again!"
 msgstr ""
 
 #: src/window.ui:11

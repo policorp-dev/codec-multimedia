@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: codec-multimedia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-14 14:06-0400\n"
-"PO-Revision-Date: 2025-11-14 14:08-0400\n"
+"POT-Creation-Date: 2025-11-17 11:15-0400\n"
+"PO-Revision-Date: 2025-11-17 11:18-0400\n"
 "Last-Translator: Lucas Salles\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -28,7 +28,8 @@ msgstr "Uma maneira fácil de instalar codecs no Policorp Linux."
 
 #: data/org.gnome.CodecMultimedia.desktop.in:10
 msgid "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
-msgstr "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+msgstr ""
+"GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
 
 #: data/org.gnome.CodecMultimedia.metainfo.xml.in:7
 msgid "Codec-multimedia"
@@ -49,6 +50,7 @@ msgstr "Captura de tela principal"
 
 #. Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
 #: src/main.py:62
+#, fuzzy
 msgid ""
 "Packages that will be installed:\n"
 "\n"
@@ -109,16 +111,11 @@ msgstr "Removendo..."
 msgid "Task failed to execute"
 msgstr "A tarefa não foi executada"
 
-#: src/window.py:104 src/window.py:244
+#: src/window.py:104 src/window.py:250
 msgid "Task failed"
 msgstr "Tarefa falhou"
 
-#: src/window.py:105
-#, python-brace-format
-msgid "{task_label}: {erro_log}"
-msgstr "{task_label}: {erro_log}"
-
-#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:246
+#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:252
 msgid "OK"
 msgstr "OK"
 
@@ -138,16 +135,20 @@ msgstr "Removido"
 msgid "The packages have been successfully removed!"
 msgstr "Os pacotes foram removidos com sucesso!"
 
-#: src/window.py:245
-#, python-brace-format
+#: src/window.py:243
+msgid "Click OK and run again!"
+msgstr "Clique em OK e execute novamente!"
+
+#: src/window.py:246
 msgid ""
-"{task_label}: {erro_log}\n"
-"\n"
-"Click OK and run again!"
+"Another application may be using apt, please wait a few minutes to continue"
 msgstr ""
-"{task_label}: {erro_log}\n"
-"\n"
-"Clique em OK e execute novamente!"
+"Outro aplicativo pode estar usando o apt, aguarde alguns minutos para "
+"continuar"
+
+#: src/window.py:247
+msgid "Click OK and wait to run again!"
+msgstr "Clique em OK e aguarde para executar novamente!"
 
 #: src/window.ui:11
 msgid "_About"
@@ -160,7 +161,8 @@ msgstr "Para que servem os codecs?"
 #: src/window.ui:131
 msgid ""
 "     Codecs are software programs or libraries that enable the encoding "
-"(compression) and decoding (decompression) of audio and video data streams.\n"
+"(compression) and decoding (decompression) of audio and video data "
+"streams.\n"
 "                        "
 msgstr ""
 "     Codecs são programas de software ou bibliotecas que permitem a "
@@ -187,6 +189,7 @@ msgstr ""
 "                        "
 
 #: src/window.ui:162
+#, fuzzy
 msgid "It has been detected that your system has Fingerprint Hardware"
 msgstr "Foi detectado que seu sistema possui um leitor de impressões digitais"
 
@@ -215,6 +218,3 @@ msgstr "Sem conexão com a internet"
 #: src/window.ui:207
 msgid "Configure Network"
 msgstr "Configurar Internet"
-
-#~ msgid "Retry"
-#~ msgstr "Tentar novamente"

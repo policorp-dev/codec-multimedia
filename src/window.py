@@ -102,7 +102,7 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             task_label=_("Task failed to execute")
             dialog = GenericConfirmDialog(
                     heading_text=_("Task failed"),
-                    body_text=_(f"{task_label}: {erro_log}"),
+                    body_text=(f"{task_label}: {erro_log}"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
             )
@@ -240,9 +240,15 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
             global erro_log
             erro_log = mensagem
             task_label=_("Task failed to execute")
+            task_label_run=_("Click OK and run again!")
+
+            if "apt" in erro_log.lower():
+                task_label=_("Another application may be using apt, please wait a few minutes to continue")
+                task_label_run=_("Click OK and wait to run again!")
+
             dialog = GenericConfirmDialog(
                     heading_text=_("Task failed"),
-                    body_text=_(f"{task_label}: {erro_log}\n\nClick OK and run again!"),
+                    body_text=(f"{task_label}\n\n {erro_log}\n\n{task_label_run}"),
                     confirm_label=_("OK"),
                     on_confirm=self._on_confirm_ok
             )
@@ -290,3 +296,4 @@ class CodecMultimediaWindow(Adw.ApplicationWindow):
 
     def _on_confirm_ok(self):
         pass
+
