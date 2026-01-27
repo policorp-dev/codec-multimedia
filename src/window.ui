@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<interface>
+  <requires lib="Adw" version="1.0"/>
+  <requires lib="gio" version="2.0"/>
+  <requires lib="gtk" version="4.0"/>
+
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="action">app.about</attribute>
+        <attribute name="label" translatable="yes">_About</attribute>
+      </item>
+    </section>
+  </menu>
+  
+  <template class="CodecMultimediaWindow" parent="AdwApplicationWindow">
+    <property name="content">
+      <object class="AdwToolbarView">
+        
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="hexpand">True</property>
+            <property name="hexpand-set">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="margin-end">60</property>
+            <property name="margin-start">60</property>
+            <property name="vscrollbar-policy">automatic</property>
+            <property name="child">
+              
+              <object class="GtkBox">
+                <property name="halign">center</property>
+                <property name="margin-bottom">48</property>
+                <property name="margin-end">24</property>
+                <property name="margin-start">24</property>
+                <property name="margin-top">48</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">36</property>
+                <property name="width-request">700</property>
+                
+                <child>
+                  <object class="GtkBox">
+                    <property name="margin-bottom">24</property>
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">12</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">play-button-svgrepo-com</property>
+                            <property name="margin-start">80</property>
+                            <property name="pixel-size">150</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="hexpand">True</property>
+                      </object>
+                    </child>
+                    
+                    <child>
+                        <object class="GtkBox">
+                          <property name="orientation">vertical</property>
+                          <property name="spacing">6</property> <property name="margin-end">80</property>
+                          <property name="margin-start">12</property>
+                          <property name="valign">center</property>
+                          <property name="hexpand">True</property>
+                          
+                          <child>
+                            <object class="GtkButton" id="install_button">
+                              <property name="height-request">50</property>
+                              <property name="label" translatable="yes">Install</property>
+
+                              <property name="halign">fill</property>
+                              <style>
+                                <class name="suggested-action"/>
+                              </style>
+                              <signal name="clicked" handler="on_install_button_clicked"/>
+                            </object>
+                          </child>
+                          
+                          <child>
+                            <object class="GtkProgressBar" id="install_progress_bar">
+                              <property name="visible">False</property>
+                              <property name="show-text">False</property> </object>
+                          </child>
+
+                          <child>
+                            <object class="GtkLabel" id="progress_label">
+                               <property name="label">Starting...</property>
+                               <property name="visible">False</property>
+                               <property name="halign">center</property>
+                               <style>
+                                 <class name="caption"/> </style>
+                            </object>
+                          </child>
+                          
+                        </object> </child>
+                    
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="justify">center</property>
+                        <property name="label" translatable="yes">What are Codecs for?</property>
+                        <style>
+                          <class name="title-3"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="justify">fill</property>
+                        <property name="label" translatable="yes">     Codecs are software programs or libraries that enable the encoding (compression) and decoding (decompression) of audio and video data streams.
+                        </property>
+                        <property name="natural-wrap-mode">none</property>
+                        <property name="wrap">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="justify">center</property>
+                        <property name="label" translatable="yes">How does this affect my experience?</property>
+                        <style>
+                          <class name="title-3"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="justify">fill</property>
+                        <property name="label" translatable="yes">     Codecs are essential components for playing media files on Linux, enabling the compression and decompression of audio and video in various formats (MP3, MP4, AAC, H.264, etc.). Installing them ensures a complete multimedia experience on the system.
+                        </property>
+                        <property name="natural-wrap-mode">none</property>
+                        <property name="wrap">True</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel" id="title_fingerprint">
+                        <property name="halign">start</property>
+                        <property name="justify">center</property>
+                        <property name="label" translatable="yes">It has been detected that your system has Fingerprint Hardware</property>
+                        <property name="visible">False</property>
+                        <style>
+                          <class name="title-3"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_fingerprint">
+                        <property name="halign">start</property>
+                        <property name="justify">fill</property>
+                        <property name="label" translatable="yes">     It was detected that your Fingerprint Hardware is a Focal Tech model with vid: 0x2808 and the following ids: 0x9338, 0xd979, 0xc652, 0xa959, 0x0579.
+     For it to work, it is necessary to install a model-specific driver provided by the manufacturer.</property>
+                        <property name="visible">False</property>
+                        <property name="natural-wrap-mode">none</property>
+                        <property name="wrap">True</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="orientation">horizontal</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object> </property>
+          </object> </property>
+        
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="end">
+              <object class="GtkMenuButton">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">primary_menu</property>
+                <property name="primary">True</property>
+                <property name="tooltip-text" translatable="yes">Main Menu</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <child type="top">
+          <object class="AdwBanner" id="internet_banner">
+            <property name="title" translatable="yes">No Internet Connection</property>
+            <property name="button-label" translatable="yes">Configure Network</property>
+            <property name="visible">False</property>
+            <property name="revealed">False</property>
+            <signal name="button-clicked" handler="on_retry_connection_clicked"/>
+          </object>
+        </child>
+        
+      </object> </property>
+    
+    <property name="width-request">700</property>
+    <property name="height-request">700</property>
+    <property name="resizable">true</property>
+    <property name="title" translatable="yes">Multimedia Codecs Installer</property>
+  </template>
+</interface>

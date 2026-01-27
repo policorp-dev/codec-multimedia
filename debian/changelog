@@ -1,3 +1,9 @@
+codec-multimedia (2.0) stable; urgency=medium
+
+  * Add nova versão padrão gnome
+
+ -- Lucas Salles <lucas.salles@policorp.com.br>  Wed, 12 Nov 2025 09:03:58 -0400
+
 codec-multimedia (1.17) stable; urgency=medium
 
   * Add instalação de pacote fingerprint

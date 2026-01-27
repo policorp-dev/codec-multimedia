@@ -1,7 +1,0 @@
-applications/* /usr/share/applications/
-data/* /usr/share/policorp-codecs/data/
-codec-multimedia /usr/share/policorp-codecs/
-fingerprint.py /usr/share/policorp-codecs/
-codecs.txt /usr/share/policorp-codecs/
-sassc-compile.sh /usr/share/policorp-codecs/
-pixmaps/* /usr/share/pixmaps/

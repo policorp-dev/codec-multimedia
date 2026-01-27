@@ -1,0 +1,220 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the codec-multimedia package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: codec-multimedia\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-17 11:15-0400\n"
+"PO-Revision-Date: 2025-11-17 11:18-0400\n"
+"Last-Translator: Lucas Salles\n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: data/org.gnome.CodecMultimedia.desktop.in:3 src/window.ui:219
+msgid "Multimedia Codecs Installer"
+msgstr "Instalar Codecs Multimídia"
+
+#: data/org.gnome.CodecMultimedia.desktop.in:4
+msgid "An easy way to install codecs on Policorp Linux."
+msgstr "Uma maneira fácil de instalar codecs no Policorp Linux."
+
+#: data/org.gnome.CodecMultimedia.desktop.in:10
+msgid "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+msgstr ""
+"GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:7
+msgid "Codec-multimedia"
+msgstr "Codec-multimedia"
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:8
+msgid "Multimedia codec installer"
+msgstr "Instalar Codecs Multimídia"
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:10
+msgid "Facilitates codec installation."
+msgstr "Facilita a instalação do codec."
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:54
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:58
+msgid "Main screenshot"
+msgstr "Captura de tela principal"
+
+#. Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
+#: src/main.py:62
+#, fuzzy
+msgid ""
+"Packages that will be installed:\n"
+"\n"
+"gstreamer1.0-plugins-ugly\n"
+"gstreamer1.0-libav\n"
+"gstreamer1.0-plugins-bad\n"
+"libavcodec-extra\n"
+"\n"
+"If there is a hardware fingerprint Focal Tech:\n"
+"\n"
+"libfprint-2-2"
+msgstr ""
+"Pacotes que serão instalados:\n"
+"\n"
+"gstreamer1.0-plugins-ugly\n"
+"gstreamer1.0-libav\n"
+"gstreamer1.0-plugins-bad\n"
+"libavcodec-extra\n"
+"\n"
+"Se houver um hardware de impressão digital da Focal Tech:\n"
+"\n"
+"libfprint-2-2"
+
+#: src/window.py:63 src/window.py:87 src/window.py:212
+msgid "Remove"
+msgstr "Remover"
+
+#: src/window.py:74 src/window.py:117 src/window.py:165 src/window.py:211
+#: src/window.py:223 src/window.ui:76
+msgid "Install"
+msgstr "Instalar"
+
+#: src/window.py:76
+msgid "The packages will be installed. Do you wish to continue?"
+msgstr "Os pacotes serão instalados. Deseja continuar?"
+
+#: src/window.py:78 src/window.py:92
+msgid "No"
+msgstr "Não"
+
+#: src/window.py:79 src/window.py:93
+msgid "Yes"
+msgstr "Sim"
+
+#: src/window.py:85 src/window.py:118
+msgid "Installing..."
+msgstr "Instalando..."
+
+#: src/window.py:90
+msgid "The packages will be removed, do you wish to continue?"
+msgstr "Os pacotes serão removidos. Deseja continuar?"
+
+#: src/window.py:99 src/window.py:121
+msgid "Removing..."
+msgstr "Removendo..."
+
+#: src/window.py:102 src/window.py:242
+msgid "Task failed to execute"
+msgstr "A tarefa não foi executada"
+
+#: src/window.py:104 src/window.py:250
+msgid "Task failed"
+msgstr "Tarefa falhou"
+
+#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:252
+msgid "OK"
+msgstr "OK"
+
+#: src/window.py:217
+msgid "Installed"
+msgstr "Instalado"
+
+#: src/window.py:218
+msgid "The package was installed successfully!"
+msgstr "O pacote foi instalado com sucesso!"
+
+#: src/window.py:228
+msgid "Removed"
+msgstr "Removido"
+
+#: src/window.py:229
+msgid "The packages have been successfully removed!"
+msgstr "Os pacotes foram removidos com sucesso!"
+
+#: src/window.py:243
+msgid "Click OK and run again!"
+msgstr "Clique em OK e execute novamente!"
+
+#: src/window.py:246
+msgid ""
+"Another application may be using apt, please wait a few minutes to continue"
+msgstr ""
+"Outro aplicativo pode estar usando o apt, aguarde alguns minutos para "
+"continuar"
+
+#: src/window.py:247
+msgid "Click OK and wait to run again!"
+msgstr "Clique em OK e aguarde para executar novamente!"
+
+#: src/window.ui:11
+msgid "_About"
+msgstr "_Sobre"
+
+#: src/window.ui:121
+msgid "What are Codecs for?"
+msgstr "Para que servem os codecs?"
+
+#: src/window.ui:131
+msgid ""
+"     Codecs are software programs or libraries that enable the encoding "
+"(compression) and decoding (decompression) of audio and video data "
+"streams.\n"
+"                        "
+msgstr ""
+"     Codecs são programas de software ou bibliotecas que permitem a "
+"codificação (compressão) e decodificação (descompressão) de fluxos de dados "
+"de áudio e vídeo.\n"
+"                       "
+
+#: src/window.ui:141
+msgid "How does this affect my experience?"
+msgstr "Como isso afeta minha experiência?"
+
+#: src/window.ui:151
+msgid ""
+"     Codecs are essential components for playing media files on Linux, "
+"enabling the compression and decompression of audio and video in various "
+"formats (MP3, MP4, AAC, H.264, etc.). Installing them ensures a complete "
+"multimedia experience on the system.\n"
+"                        "
+msgstr ""
+"     Os codecs são componentes essenciais para a reprodução de arquivos de "
+"mídia no Linux, permitindo a compressão e descompressão de áudio e vídeo em "
+"diversos formatos (MP3, MP4, AAC, H.264, etc.). A instalação deles garante "
+"uma experiência multimídia completa no sistema.\n"
+"                        "
+
+#: src/window.ui:162
+#, fuzzy
+msgid "It has been detected that your system has Fingerprint Hardware"
+msgstr "Foi detectado que seu sistema possui um leitor de impressões digitais"
+
+#: src/window.ui:173
+msgid ""
+"     It was detected that your Fingerprint Hardware is a Focal Tech model "
+"with vid: 0x2808 and the following ids: 0x9338, 0xd979, 0xc652, 0xa959, "
+"0x0579.\n"
+"     For it to work, it is necessary to install a model-specific driver "
+"provided by the manufacturer."
+msgstr ""
+"     Foi detectado que seu leitor de impressões digitais é um modelo Focal "
+"Tech com vid: 0x2808 e os seguintes ids: 0x9338, 0xd979, 0xc652, 0xa959, "
+"0x0579.\n"
+"     Para que funcione, é necessário instalar um driver específico para o "
+"modelo, fornecido pelo fabricante."
+
+#: src/window.ui:198
+msgid "Main Menu"
+msgstr "Menu"
+
+#: src/window.ui:206
+msgid "No Internet Connection"
+msgstr "Sem conexão com a internet"
+
+#: src/window.ui:207
+msgid "Configure Network"
+msgstr "Configurar Internet"

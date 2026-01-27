@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Multimedia Codecs Installer
+Comment=An easy way to install codecs on Policorp Linux.
+Exec=codec-multimedia
+Icon=play-button-svgrepo-com
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;
+StartupNotify=true
+#DBusActivatable=true

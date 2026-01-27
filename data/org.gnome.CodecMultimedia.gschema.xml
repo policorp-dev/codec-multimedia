@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="codec-multimedia">
+	<schema id="org.gnome.CodecMultimedia" path="/org/gnome/CodecMultimedia/">
+	</schema>
+</schemalist>

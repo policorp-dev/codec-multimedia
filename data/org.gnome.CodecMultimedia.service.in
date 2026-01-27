@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.CodecMultimedia
+Exec=@bindir@/codec-multimedia --gapplication-service

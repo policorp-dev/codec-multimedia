@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+   "http://www.freedesktop.org/software/policylabs/policyconfig-1.0.dtd">
+  <policyconfig>
+
+    <action id="org.gnome.CodecMultimedia.install-drivers">
+      <description>Run Appt, a packages installer</description>
+      <message>Authentication is required to run the Multimedia Codecs Installer</message>
+      <message xml:lang="pt_BR">Requer autorização para executar o Instalar Codecs Multimídiar</message>
+      <defaults>
+        <allow_active>auth_admin_keep</allow_active>
+      </defaults>
+      <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/python3</annotate>
+    </action>
+
+    <action id="org.gnome.CodecMultimedia.checkaptlock">
+      <description>Check if the package manager is busy</description>
+      <message>Authentication is required to install the packages.</message>
+      <message xml:lang="pt_BR">É necessária autenticação para instalar os pacotes.</message>
+      <icon_name>system-software-install</icon_name>
+      <defaults>
+        <allow_any>no</allow_any>
+        <allow_inactive>no</allow_inactive>
+        <allow_active>yes</allow_active>
+      </defaults>
+      <annotate key="org.freedesktop.policykit.exec.path">/usr/share/codec-multimedia/codec_multimedia/install_apt.py</annotate>
+    </action>
+    <action id="org.gnome.CodecMultimedia.cleanupfiles">
+      <description>Check if the package manager is busy</description>
+      <message>Authentication is required to uninstall the packages.</message>
+      <message xml:lang="pt_BR">É necessária autenticação para desinstalar os pacotes.</message>
+      <icon_name>system-software-install</icon_name>
+      <defaults>
+        <allow_any>no</allow_any>
+        <allow_inactive>no</allow_inactive>
+        <allow_active>yes</allow_active>
+      </defaults>
+      <annotate key="org.freedesktop.policykit.exec.path">/usr/share/codec-multimedia/codec_multimedia/uninstall_apt.py</annotate>
+    </action>
+    </policyconfig>

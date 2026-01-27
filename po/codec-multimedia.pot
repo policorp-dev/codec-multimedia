@@ -1,0 +1,189 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the codec-multimedia package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: codec-multimedia\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-17 11:15-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/org.gnome.CodecMultimedia.desktop.in:3 src/window.ui:219
+msgid "Multimedia Codecs Installer"
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.desktop.in:4
+msgid "An easy way to install codecs on Policorp Linux."
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.desktop.in:10
+msgid "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:7
+msgid "Codec-multimedia"
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:8
+msgid "Multimedia codec installer"
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:10
+msgid "Facilitates codec installation."
+msgstr ""
+
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:54
+#: data/org.gnome.CodecMultimedia.metainfo.xml.in:58
+msgid "Main screenshot"
+msgstr ""
+
+#. Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
+#: src/main.py:62
+msgid ""
+"Packages that will be installed:\n"
+"\n"
+"gstreamer1.0-plugins-ugly\n"
+"gstreamer1.0-libav\n"
+"gstreamer1.0-plugins-bad\n"
+"libavcodec-extra\n"
+"\n"
+"If there is a hardware fingerprint Focal Tech:\n"
+"\n"
+"libfprint-2-2"
+msgstr ""
+
+#: src/window.py:63 src/window.py:87 src/window.py:212
+msgid "Remove"
+msgstr ""
+
+#: src/window.py:74 src/window.py:117 src/window.py:165 src/window.py:211
+#: src/window.py:223 src/window.ui:76
+msgid "Install"
+msgstr ""
+
+#: src/window.py:76
+msgid "The packages will be installed. Do you wish to continue?"
+msgstr ""
+
+#: src/window.py:78 src/window.py:92
+msgid "No"
+msgstr ""
+
+#: src/window.py:79 src/window.py:93
+msgid "Yes"
+msgstr ""
+
+#: src/window.py:85 src/window.py:118
+msgid "Installing..."
+msgstr ""
+
+#: src/window.py:90
+msgid "The packages will be removed, do you wish to continue?"
+msgstr ""
+
+#: src/window.py:99 src/window.py:121
+msgid "Removing..."
+msgstr ""
+
+#: src/window.py:102 src/window.py:242
+msgid "Task failed to execute"
+msgstr ""
+
+#: src/window.py:104 src/window.py:250
+msgid "Task failed"
+msgstr ""
+
+#: src/window.py:106 src/window.py:219 src/window.py:230 src/window.py:252
+msgid "OK"
+msgstr ""
+
+#: src/window.py:217
+msgid "Installed"
+msgstr ""
+
+#: src/window.py:218
+msgid "The package was installed successfully!"
+msgstr ""
+
+#: src/window.py:228
+msgid "Removed"
+msgstr ""
+
+#: src/window.py:229
+msgid "The packages have been successfully removed!"
+msgstr ""
+
+#: src/window.py:243
+msgid "Click OK and run again!"
+msgstr ""
+
+#: src/window.py:246
+msgid ""
+"Another application may be using apt, please wait a few minutes to continue"
+msgstr ""
+
+#: src/window.py:247
+msgid "Click OK and wait to run again!"
+msgstr ""
+
+#: src/window.ui:11
+msgid "_About"
+msgstr ""
+
+#: src/window.ui:121
+msgid "What are Codecs for?"
+msgstr ""
+
+#: src/window.ui:131
+msgid ""
+"     Codecs are software programs or libraries that enable the encoding "
+"(compression) and decoding (decompression) of audio and video data streams.\n"
+"                        "
+msgstr ""
+
+#: src/window.ui:141
+msgid "How does this affect my experience?"
+msgstr ""
+
+#: src/window.ui:151
+msgid ""
+"     Codecs are essential components for playing media files on Linux, "
+"enabling the compression and decompression of audio and video in various "
+"formats (MP3, MP4, AAC, H.264, etc.). Installing them ensures a complete "
+"multimedia experience on the system.\n"
+"                        "
+msgstr ""
+
+#: src/window.ui:162
+msgid "It has been detected that your system has Fingerprint Hardware"
+msgstr ""
+
+#: src/window.ui:173
+msgid ""
+"     It was detected that your Fingerprint Hardware is a Focal Tech model "
+"with vid: 0x2808 and the following ids: 0x9338, 0xd979, 0xc652, 0xa959, "
+"0x0579.\n"
+"     For it to work, it is necessary to install a model-specific driver "
+"provided by the manufacturer."
+msgstr ""
+
+#: src/window.ui:198
+msgid "Main Menu"
+msgstr ""
+
+#: src/window.ui:206
+msgid "No Internet Connection"
+msgstr ""
+
+#: src/window.ui:207
+msgid "Configure Network"
+msgstr ""

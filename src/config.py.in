@@ -1,0 +1,7 @@
+# Ficheiro gerado pelo Meson. NÃO EDITE DIRETAMENTE O FICHEIRO .py.
+# As alterações devem ser feitas aqui (em config.py.in) e nos ficheiros meson.build.
+
+APPNAME = '@pkg_name@'
+APP_ID = 'org.gnome.DriversManager'
+VERSION = '@VERSION@'
+PKGDATADIR = '@pkgdatadir@'
