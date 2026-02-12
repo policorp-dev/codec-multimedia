@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: codec-multimedia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 11:15-0400\n"
-"PO-Revision-Date: 2025-11-17 11:18-0400\n"
+"POT-Creation-Date: 2026-02-12 09:33-0400\n"
+"PO-Revision-Date: 2026-02-12 09:38-0400\n"
 "Last-Translator: Lucas Salles\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -28,8 +28,7 @@ msgstr "Uma maneira fácil de instalar codecs no Policorp Linux."
 
 #: data/org.gnome.CodecMultimedia.desktop.in:10
 msgid "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
-msgstr ""
-"GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
+msgstr "GTK;desktop;preferences;Codecs;codec;video;Instalar Codecs Multimídia;"
 
 #: data/org.gnome.CodecMultimedia.metainfo.xml.in:7
 msgid "Codec-multimedia"
@@ -50,7 +49,6 @@ msgstr "Captura de tela principal"
 
 #. Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
 #: src/main.py:62
-#, fuzzy
 msgid ""
 "Packages that will be installed:\n"
 "\n"
@@ -161,8 +159,7 @@ msgstr "Para que servem os codecs?"
 #: src/window.ui:131
 msgid ""
 "     Codecs are software programs or libraries that enable the encoding "
-"(compression) and decoding (decompression) of audio and video data "
-"streams.\n"
+"(compression) and decoding (decompression) of audio and video data streams.\n"
 "                        "
 msgstr ""
 "     Codecs são programas de software ou bibliotecas que permitem a "
@@ -189,7 +186,6 @@ msgstr ""
 "                        "
 
 #: src/window.ui:162
-#, fuzzy
 msgid "It has been detected that your system has Fingerprint Hardware"
 msgstr "Foi detectado que seu sistema possui um leitor de impressões digitais"
 
