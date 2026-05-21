@@ -4,6 +4,7 @@ import re
 import requests
 import os
 from time import sleep
+import json
 
 def verificar_focal_tech():
     # IDs de Vendor (VID) e Produto (PID) a serem verificados
@@ -51,8 +52,9 @@ def verificar_focal_tech():
         return False
 
 
-def verificar_libfprint():
-    versao_alvo = "1:1.95.4+tod1-0ubuntu1~22.04.2+policorp"
+def verificar_libfprint(versao_alvo=None):
+    if not versao_alvo:
+        versao_alvo = "1:1.95.4+tod1-0ubuntu1~22.04.2+policorp"
 
     try:
         resultado = subprocess.check_output(["dpkg", "-l"], text=True)
@@ -116,5 +118,26 @@ def baixar_arquivo(url, destino, tentativas=3, timeout=20):
 
     print("Falha no download após várias tentativas.")
     return None
+
+
+def get_latest_package_info(package_name: str) -> dict:
+    """
+    Busca o arquivo packages.json remoto e retorna as informações do pacote solicitado.
+    """
+    url = "https://www.policorp.com.br/downloads/codec-multimedia-packages.json"
+    #url = "http://localhost:8000/src/codec-multimedia-packages.json"
+    try:
+        print(f"INFO:Buscando informações atualizadas em {url}...", flush=True)
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        info = data.get(package_name)
+        if not info:
+            print(f"AVISO:Pacote '{package_name}' não encontrado no JSON remoto.")
+        return info
+    except Exception as e:
+        print(f"ERRO:Falha ao obter informações dos pacotes via JSON: {e}")
+        return None
 
 

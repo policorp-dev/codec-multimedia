@@ -24,16 +24,18 @@
         "*.a"
     ],
     "modules" : [
-	{
-            "name": "pip-install-requests",
-            "buildsystem": "simple",
-            "build-options": {
-            "build-args": [ "--share=network" ]
+        {
+            "name" : "pip-install-requests",
+            "buildsystem" : "simple",
+            "build-options" : {
+                "build-args" : [
+                    "--share=network"
+                ]
             },
-            "build-commands": [
-               "pip3 install --prefix=/app requests"
+            "build-commands" : [
+                "pip3 install --prefix=/app requests"
             ]
-    	},
+        },
         {
             "name" : "codec-multimedia",
             "builddir" : true,
@@ -43,7 +45,13 @@
                     "type" : "git",
                     "url" : "file:///home/lucas/Projects"
                 }
+            ],
+            "config-opts" : [
+                "--libdir=lib"
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {        }
+    }
 }
