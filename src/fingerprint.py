@@ -52,9 +52,29 @@ def verificar_focal_tech():
         return False
 
 
+def extrair_versao_do_filename(filename: str) -> str | None:
+    """
+    Extrai a versão do nome do arquivo .deb.
+    Formato: <nome_pacote>_<versao>_<arch>_<data>.deb
+    A versão fica entre o primeiro e o segundo underscore.
+    Ex: 'libfprint-2-2_2.94.4+tod1-0ubuntu1~22.04.2_amd64_20250714.deb' -> '2.94.4+tod1-0ubuntu1~22.04.2'
+    """
+    try:
+        partes = filename.split("_")
+        if len(partes) >= 2:
+            return partes[1]
+    except Exception as e:
+        print(f"AVISO:Não foi possível extrair versão do filename '{filename}': {e}")
+    return None
+
+
 def verificar_libfprint(versao_alvo=None):
+    """
+    Verifica se o libfprint-2-2 está instalado na versão alvo.
+    'versao_alvo' pode vir sem epoch (ex: '2.94.4+...'); o epoch do dpkg é ignorado na comparação.
+    """
     if not versao_alvo:
-        versao_alvo = "1:1.95.4+tod1-0ubuntu1~22.04.2+policorp"
+        versao_alvo = "1.95.4+tod1-0ubuntu1~22.04.2+policorp"
 
     try:
         resultado = subprocess.check_output(["dpkg", "-l"], text=True)
@@ -67,7 +87,11 @@ def verificar_libfprint(versao_alvo=None):
 
                 nome_pacote = nome_pacote_completo.split(":")[0]
 
-                if versao_instalada == versao_alvo:
+                # Remove o epoch (ex: "2:") da versão instalada para comparar
+                # com versão extraída do filename que não possui epoch.
+                versao_instalada_sem_epoch = versao_instalada.split(":", 1)[-1]
+
+                if versao_instalada_sem_epoch == versao_alvo:
                     return nome_pacote  # Retorna "libfprint-2-2"
                 else:
                     return None
@@ -135,6 +159,8 @@ def get_latest_package_info(package_name: str) -> dict:
         info = data.get(package_name)
         if not info:
             print(f"AVISO:Pacote '{package_name}' não encontrado no JSON remoto.")
+        else:
+            print(f"INFO:JSON obtido de {url}")
         return info
     except Exception as e:
         print(f"ERRO:Falha ao obter informações dos pacotes via JSON: {e}")

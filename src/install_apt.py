@@ -179,6 +179,7 @@ def download_lib_focal_tech(pkg_info: dict) -> str:
         caminho_salvo = fingerprint.baixar_arquivo(url, "/tmp")
 
         if caminho_salvo and os.path.exists(caminho_salvo):
+            print(f"INFO:Pacote salvo em {caminho_salvo}", file=sys.stderr)
             return caminho_salvo
         else:
             print("ERRO:O download falhou (baixar_arquivo não retornou o caminho).", file=sys.stderr)
@@ -195,7 +196,7 @@ if __name__ == "__main__":
 
     try:
         pkg_info = fingerprint.get_latest_package_info("libfprint-2-2")
-        versao_alvo = pkg_info.get("version") if pkg_info else None
+        versao_alvo = fingerprint.extrair_versao_do_filename(pkg_info.get("filename")) if pkg_info else None
         
         tem_hardware_focal = fingerprint.verificar_focal_tech()
         driver_instalado_correto = fingerprint.verificar_libfprint(versao_alvo)
