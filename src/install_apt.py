@@ -156,21 +156,30 @@ def instalar_pacote_deb(deb_path: str) -> bool:
         print(f"ERRO:Falha ao instalar o .deb: {e}", file=sys.stderr)
         return False
 
-def download_lib_focal_tech() -> str:
-    deb_name = "libfprint-2-2_1.95.4+tod1-0ubuntu1~22.04.2+policorp_amd64_20250714.deb"
+def download_lib_focal_tech(pkg_info: dict) -> str:
+    if not pkg_info:
+        print("ERRO:Informações do pacote não fornecidas para download.", file=sys.stderr)
+        return None
+
+    deb_name = pkg_info.get("filename")
+    url = pkg_info.get("url")
+
+    if not deb_name or not url:
+        print("ERRO:Informações do pacote incompletas no JSON (filename ou url ausente).", file=sys.stderr)
+        return None
+
     deb_path = f"/tmp/{deb_name}"
 
     if os.path.exists(deb_path):
-        print("INFO:Arquivo .deb já existe em /tmp.", file=sys.stderr)
+        print(f"INFO:Arquivo {deb_name} já existe em /tmp.", file=sys.stderr)
         return deb_path
 
-    url = f"https://www.policorp.com.br/downloads/{deb_name}"
-
     try:
-        print(f"INFO:Baixando {deb_name}...", file=sys.stderr)
+        print(f"INFO:Baixando {deb_name} de {url}...", file=sys.stderr)
         caminho_salvo = fingerprint.baixar_arquivo(url, "/tmp")
 
         if caminho_salvo and os.path.exists(caminho_salvo):
+            print(f"INFO:Pacote salvo em {caminho_salvo}", file=sys.stderr)
             return caminho_salvo
         else:
             print("ERRO:O download falhou (baixar_arquivo não retornou o caminho).", file=sys.stderr)
@@ -186,14 +195,21 @@ if __name__ == "__main__":
         sys.stdout.reconfigure(line_buffering=True)
 
     try:
+        pkg_info = fingerprint.get_latest_package_info("libfprint-2-2")
+        versao_alvo = fingerprint.extrair_versao_do_filename(pkg_info.get("filename")) if pkg_info else None
+        
         tem_hardware_focal = fingerprint.verificar_focal_tech()
-        driver_instalado_correto = fingerprint.verificar_libfprint()
+        driver_instalado_correto = fingerprint.verificar_libfprint(versao_alvo)
     except Exception as e:
-        print(f"ERRO:Falha ao verificar hardware: {e}", file=sys.stderr)
+        print(f"ERRO:Falha ao verificar hardware ou obter informações do pacote: {e}", file=sys.stderr)
         sys.exit(1)
 
     if tem_hardware_focal and not driver_instalado_correto:
-        deb_path = download_lib_focal_tech()
+        if not pkg_info:
+            print("ERRO:Hardware Focal Tech detectado, mas não foi possível obter informações do driver via JSON.", file=sys.stderr)
+            sys.exit(1)
+            
+        deb_path = download_lib_focal_tech(pkg_info)
         if not deb_path:
             print("ERRO:Falha ao baixar o driver Focal Tech.", file=sys.stderr)
             sys.exit(1)
