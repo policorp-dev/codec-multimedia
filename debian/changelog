@@ -1,3 +1,9 @@
+codec-multimedia (2.3) stable; urgency=medium
+
+  * Adicionado traducao es_MX
+
+ -- Edson Juliano Drosdeck <edson@policorp.com.br>  Fri, 25 Sep 2026 17:36:29 +0000
+
 codec-multimedia (2.2) stable; urgency=medium
 
   * Ajuste no pacote libfprint
